@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>100% not a Blooket Bot Maker</title>
+
   <style>
     * { box-sizing: border-box; }
 
@@ -19,7 +20,7 @@
     }
 
     main {
-      width: min(100%, 520px);
+      width: min(100%, 900px);
       padding: 32px;
       border-radius: 20px;
       background: white;
@@ -81,8 +82,32 @@
     }
 
     a { color: #5140c2; }
+
+    .fruit-board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .fruit-tile {
+      min-height: 64px;
+      padding: 8px;
+      border: 1px solid #e2dff2;
+      border-radius: 12px;
+      background: #f8f6ff;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .fruit-tile:hover { background: #eeeaff; }
+
+    .fruit-tile.selected {
+      outline: 3px solid #6654d9;
+    }
   </style>
 </head>
+
 <body>
   <main>
     <h1>Blooket Bot Maker</h1>
@@ -115,6 +140,14 @@
       <div id="wifi-result" aria-live="polite"></div>
       <img id="jeff" src="assets/jeff.png" alt="Jeff">
     </section>
+
+    <section>
+      <h2>Fruit Merge</h2>
+      <p>Click two matching fruits to merge them. How big can you get?</p>
+      <div id="fruit-board" class="fruit-board" aria-label="Fruit merge game"></div>
+      <p id="fruit-status" aria-live="polite">Pick two matching fruits!</p>
+      <button type="button" id="fruit-reset">New game</button>
+    </section>
   </main>
 
   <script>
@@ -122,12 +155,13 @@
     const codeInput = document.querySelector("#code");
     const result = document.querySelector("#result");
 
-    const words = [
-      "Fox", "Cat", "Dog", "Bear", "Wolf", "Hawk",
-      "Owl", "Lion", "Tiger", "Shark", "Whale", "Frog",
-      "Panda", "Koala", "Llama", "Moose", "Bunny", "Otter",
-      "Raven", "Cobra", "Ducky", "Mango", "Pizza", "Waffle",
-      "Comet", "Pixel", "Ninja", "Sunny", "Zippy", "Cosmic"
+    const nameStarts = [
+      "ChatGPT", "DuckBot", "PixelAI", "RoboFox", "ByteBot",
+      "MegaBot", "BrainAI", "BotBuddy", "SmartBot", "AIDuck",
+      "CyberCat", "NeuralFox", "DataBot", "AIBear", "CodeOwl",
+      "DigitalDog", "BotLlama", "TechTiger", "CloudBot", "AIWizard",
+      "RoboPanda", "LogicBot", "AICat", "QuantumBot", "CyberBee",
+      "ByteBuddy", "BotNinja", "AIMango", "RoboRaven", "PixelBot"
     ];
 
     joinForm.addEventListener("submit", (event) => {
@@ -136,20 +170,44 @@
       const code = codeInput.value.trim();
       if (!code) return;
 
-      const word = words[Math.floor(Math.random() * words.length)];
-      const digits = Math.floor(Math.random() * 10000)
-        .toString()
-        .padStart(4, "0");
-      const randomName = `${word.slice(0, 6)}${digits}`;
+      const nameStart =
+        nameStarts[Math.floor(Math.random() * nameStarts.length)];
+      const digits = Math.floor(Math.random() * 90) + 10;
+      const randomName = `${nameStart}${digits}`;
 
       const joinUrl = new URL("https://play.blooket.com/play");
       joinUrl.searchParams.set("id", code);
-      joinUrl.searchParams.set("name", randomName);
 
       result.replaceChildren();
 
       const nameText = document.createElement("p");
       nameText.textContent = `Your randomly generated name: ${randomName}`;
+
+      const copyButton = document.createElement("button");
+      copyButton.type = "button";
+      copyButton.textContent = "Copy name";
+
+      copyButton.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(randomName);
+          copyButton.textContent = "Copied!";
+        } catch {
+          const tempInput = document.createElement("input");
+          tempInput.value = randomName;
+          tempInput.setAttribute("readonly", "");
+          tempInput.style.position = "fixed";
+          tempInput.style.left = "-9999px";
+          document.body.appendChild(tempInput);
+          tempInput.select();
+
+          const copied = document.execCommand("copy");
+          tempInput.remove();
+
+          copyButton.textContent = copied
+            ? "Copied!"
+            : "Select and copy the name above";
+        }
+      });
 
       const link = document.createElement("a");
       link.href = joinUrl.toString();
@@ -159,9 +217,9 @@
 
       const note = document.createElement("p");
       note.textContent =
-        "Click the link to continue. Blooket may not accept the name from the link, so you might need to enter it on the join screen.";
+        "Open the link, then paste your copied name into Blooket’s name field.";
 
-      result.append(nameText, link, note);
+      result.append(nameText, copyButton, link, note);
     });
 
     document.querySelector("#yes").addEventListener("click", () => {
@@ -176,6 +234,87 @@
 
       document.querySelector("#jeff").style.display = "none";
     });
+
+    const fruitBoard = document.querySelector("#fruit-board");
+    const fruitStatus = document.querySelector("#fruit-status");
+    const fruitReset = document.querySelector("#fruit-reset");
+
+    const fruitLevels = ["🍒", "🍓", "🍇", "🍊", "🍉", "🍍", "🥝"];
+    let fruits = [];
+    let selectedFruit = null;
+
+    function startFruitGame() {
+      fruits = Array.from(
+        { length: 16 },
+        () => fruitLevels[Math.floor(Math.random() * 3)]
+      );
+      selectedFruit = null;
+      fruitStatus.textContent = "Pick two matching fruits!";
+      renderFruitBoard();
+    }
+
+    function renderFruitBoard() {
+      fruitBoard.replaceChildren();
+
+      fruits.forEach((fruit, index) => {
+        const tile = document.createElement("button");
+        tile.type = "button";
+        tile.className = "fruit-tile";
+        tile.textContent = fruit;
+        tile.setAttribute("aria-label", `Fruit: ${fruit}`);
+
+        if (selectedFruit === index) {
+          tile.classList.add("selected");
+        }
+
+        tile.addEventListener("click", () => selectFruit(index));
+        fruitBoard.appendChild(tile);
+      });
+    }
+
+    function selectFruit(index) {
+      if (selectedFruit === null) {
+        selectedFruit = index;
+        fruitStatus.textContent = "Now pick another matching fruit.";
+        renderFruitBoard();
+        return;
+      }
+
+      const firstIndex = selectedFruit;
+      selectedFruit = null;
+
+      if (firstIndex === index) {
+        fruitStatus.textContent = "Pick a different fruit tile.";
+        renderFruitBoard();
+        return;
+      }
+
+      if (fruits[firstIndex] !== fruits[index]) {
+        fruitStatus.textContent = "Those fruits don’t match—try again!";
+        renderFruitBoard();
+        return;
+      }
+
+      const currentLevel = fruitLevels.indexOf(fruits[firstIndex]);
+
+      if (currentLevel === fruitLevels.length - 1) {
+        fruitStatus.textContent =
+          "That’s the biggest fruit! Start a new game to play again.";
+        renderFruitBoard();
+        return;
+      }
+
+      fruits[firstIndex] = fruitLevels[currentLevel + 1];
+      fruits[index] = fruitLevels[Math.floor(Math.random() * 3)];
+
+      fruitStatus.textContent =
+        `Nice merge! You made ${fruitLevels[currentLevel + 1]}.`;
+
+      renderFruitBoard();
+    }
+
+    fruitReset.addEventListener("click", startFruitGame);
+    startFruitGame();
   </script>
 </body>
 </html>
