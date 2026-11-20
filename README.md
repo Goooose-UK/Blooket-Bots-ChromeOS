@@ -22,5 +22,5 @@ Enter a game code or play Fruit Merge in the sidebar.
 Credits
 Thank you to Goooose-UK and Ducks-UK.
 
-GitHub: https://github.com/Goooose-UK/BlooketClientV6
+GitHub: https://github.com/Goooose-UK/Blooket-Bots-ChromeOS
 YouTube: https://www.youtube.com/@Ducks_UK
