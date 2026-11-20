@@ -13,14 +13,11 @@ Play a physics-style fruit merge game.
 Choose Light, Dark, or Pastel themes.
 Runs in a browser without installing libraries or dependencies.
 
-Run it
-
-Save the webpage as index.html.
-Open index.html in a modern browser.
-Enter a game code or play Fruit Merge in the sidebar.
+To Run it open https://github.com/Goooose-UK/Blooket-Bots-ChromeOS in your browser :D Thats it!
 
 Credits
 Thank you to Goooose-UK and Ducks-UK.
 
 GitHub: https://github.com/Goooose-UK/Blooket-Bots-ChromeOS
 YouTube: https://www.youtube.com/@Ducks_UK
+Dont Forget to Subscribe to @Ducks_UK on Youtube
