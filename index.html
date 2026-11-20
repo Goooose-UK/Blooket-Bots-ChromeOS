@@ -6,6 +6,7 @@
   <title>Blooket Helper</title>
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -16,6 +17,7 @@
       color: #20243a;
       background: linear-gradient(135deg, #d9f3ff, #f0e4ff);
     }
+
     main {
       width: min(100%, 520px);
       padding: 32px;
@@ -23,9 +25,21 @@
       background: white;
       box-shadow: 0 12px 40px #26345a22;
     }
+
     h1 { margin-top: 0; }
-    section + section { margin-top: 28px; padding-top: 24px; border-top: 1px solid #e8e8ef; }
-    label { display: block; margin-bottom: 8px; font-weight: 650; }
+
+    section + section {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid #e8e8ef;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 650;
+    }
+
     input, button {
       width: 100%;
       padding: 12px 14px;
@@ -33,6 +47,7 @@
       border-radius: 10px;
       font: inherit;
     }
+
     button {
       margin-top: 10px;
       border: 0;
@@ -41,12 +56,30 @@
       font-weight: 700;
       cursor: pointer;
     }
+
     button:hover { background: #5140c2; }
-    .choices { display: flex; gap: 12px; }
+
+    .choices {
+      display: flex;
+      gap: 12px;
+    }
+
     .choices button { width: 50%; }
     .choices button:last-child { background: #757889; }
-    #result { margin-top: 14px; overflow-wrap: anywhere; }
-    #jeff { display: none; max-width: 100%; max-height: 280px; margin-top: 14px; border-radius: 12px; }
+
+    #result {
+      margin-top: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    #jeff {
+      display: none;
+      max-width: 100%;
+      max-height: 280px;
+      margin-top: 14px;
+      border-radius: 12px;
+    }
+
     a { color: #5140c2; }
   </style>
 </head>
@@ -58,8 +91,14 @@
       <h2>Join a game</h2>
       <form id="join-form">
         <label for="code">Enter a Blooket game code</label>
-        <input id="code" inputmode="numeric" autocomplete="off" placeholder="Game code" required>
-        <button type="submit">Get join link</button>
+        <input
+          id="code"
+          inputmode="numeric"
+          autocomplete="off"
+          placeholder="Game code"
+          required
+        >
+        <button type="submit">Generate join link</button>
       </form>
       <div id="result" aria-live="polite"></div>
     </section>
@@ -67,10 +106,12 @@
     <section>
       <h2>Fix my Wi-Fi</h2>
       <p>Should Jeff come fix your Wi-Fi?</p>
+
       <div class="choices">
         <button type="button" id="yes">Y</button>
         <button type="button" id="no">N</button>
       </div>
+
       <div id="wifi-result" aria-live="polite"></div>
       <img id="jeff" src="assets/jeff.png" alt="Jeff">
     </section>
@@ -81,32 +122,52 @@
     const codeInput = document.querySelector("#code");
     const result = document.querySelector("#result");
 
+    const names = [
+      "ZippyFox", "CosmicPanda", "SunnyKoala", "PixelOwl",
+      "TurboTurtle", "LuckyLlama", "MightyMango", "CloudyCat",
+      "WaffleWizard", "BouncyBee", "NeonNarwhal", "FuzzyComet"
+    ];
+
     joinForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      const code = codeInput.value.trim();
 
+      const code = codeInput.value.trim();
       if (!code) return;
 
-      const url = `https://play.blooket.com/play?id=${encodeURIComponent(code)}`;
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      const joinUrl = new URL("https://play.blooket.com/play");
+
+      joinUrl.searchParams.set("id", code);
+      joinUrl.searchParams.set("name", randomName);
+
       result.replaceChildren();
 
+      const nameText = document.createElement("p");
+      nameText.textContent = `Your randomly generated name: ${randomName}`;
+
       const link = document.createElement("a");
-      link.href = url;
-      link.textContent = url;
+      link.href = joinUrl.toString();
+      link.textContent = "Open Blooket join link";
       link.target = "_blank";
       link.rel = "noopener noreferrer";
 
-      result.append("Your join link: ", link);
+      const note = document.createElement("p");
+      note.textContent =
+        "Click the link to continue. Blooket may not accept the name from the link, so you might need to enter it on the join screen.";
+
+      result.append(nameText, link, note);
     });
 
     document.querySelector("#yes").addEventListener("click", () => {
-      document.querySelector("#wifi-result").textContent = "OK Your wifi is fixed";
+      document.querySelector("#wifi-result").textContent =
+        "OK Your wifi is fixed";
       document.querySelector("#jeff").style.display = "block";
     });
 
     document.querySelector("#no").addEventListener("click", () => {
       document.querySelector("#wifi-result").textContent =
         "Because you didn’t say yes to Jeff fixing your Wi-Fi, he’s broke and homeless now. He was ready to come over, solve the whole problem, and get his life back on track but you never gave him the green light. Now he’s out there with no job, no home, and no Wi-Fi to connect to. I hope you’re happy.";
+
       document.querySelector("#jeff").style.display = "none";
     });
   </script>
