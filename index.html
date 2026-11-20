@@ -83,37 +83,33 @@
 
     a { color: #5140c2; }
 
+    .fruit-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     #fruit-next {
-      text-align: center;
+      font-size: 1.1rem;
       font-weight: 650;
     }
 
-    .fruit-board {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 4px;
-      width: min(100%, 360px);
+    #fruit-reset {
+      width: auto;
+      margin: 0 0 0 auto;
+    }
+
+    #fruit-canvas {
+      display: block;
+      width: min(100%, 420px);
+      height: auto;
       margin: 14px auto;
-      padding: 6px;
       border: 3px solid #8675dc;
-      border-radius: 12px;
-      background: #eeeaff;
+      border-radius: 14px;
+      background: #f5f2ff;
+      touch-action: none;
     }
-
-    .fruit-cell {
-      aspect-ratio: 1;
-      display: grid;
-      place-items: center;
-      padding: 0;
-      border: 1px solid #ddd8f3;
-      border-radius: 8px;
-      background: white;
-      font-size: clamp(18px, 5vw, 30px);
-      cursor: pointer;
-    }
-
-    .fruit-cell:hover { background: #f5f2ff; }
-    .fruit-cell:disabled { cursor: default; }
   </style>
 </head>
 
@@ -152,15 +148,25 @@
 
     <section>
       <h2>Fruit Merge</h2>
-      <p>Choose a column to drop the next fruit. Matching fruits that touch merge!</p>
-      <div id="fruit-next" aria-live="polite"></div>
-      <div id="fruit-board" class="fruit-board" aria-label="Fruit merge game"></div>
-      <p id="fruit-status" aria-live="polite">Your turn!</p>
-      <button type="button" id="fruit-reset">New game</button>
+      <p>Move your pointer to aim, then click or tap to drop a fruit. Matching fruits merge!</p>
+
+      <div class="fruit-controls">
+        <div id="fruit-next" aria-live="polite">Loading game…</div>
+        <button type="button" id="fruit-reset">New game</button>
+      </div>
+
+      <canvas
+        id="fruit-canvas"
+        width="420"
+        height="560"
+        aria-label="Physics fruit merge game"
+      ></canvas>
+      <p id="fruit-status" aria-live="polite">Aim and click or tap to drop a fruit.</p>
     </section>
   </main>
 
   <script>
+    // Random AI-style names and Blooket join link
     const joinForm = document.querySelector("#join-form");
     const codeInput = document.querySelector("#code");
     const result = document.querySelector("#result");
@@ -232,6 +238,7 @@
       result.append(nameText, copyButton, link, note);
     });
 
+    // Wi-Fi joke buttons
     document.querySelector("#yes").addEventListener("click", () => {
       document.querySelector("#wifi-result").textContent =
         "OK Your wifi is fixed";
@@ -245,130 +252,385 @@
       document.querySelector("#jeff").style.display = "none";
     });
 
-    const fruitBoard = document.querySelector("#fruit-board");
+    // Standalone fruit game physics; no external libraries required.
+    const canvas = document.querySelector("#fruit-canvas");
+    const ctx = canvas.getContext("2d");
     const fruitStatus = document.querySelector("#fruit-status");
-    const fruitNext = document.querySelector("#fruit-next");
+    const fruitNextDisplay = document.querySelector("#fruit-next");
     const fruitReset = document.querySelector("#fruit-reset");
 
-    const fruitLevels = ["🍒", "🍓", "🍇", "🍊", "🍎", "🍐", "🍉", "🍍"];
-    const columns = 6;
-    const rows = 8;
+    const WIDTH = canvas.width;
+    const HEIGHT = canvas.height;
+    const WALL = 12;
+    const GRAVITY = 1000;
+    const WALL_BOUNCE = 0.22;
+    const FRUIT_BOUNCE = 0.12;
+    const FRICTION = 0.985;
+
+    const fruitTypes = [
+      { emoji: "🍒", radius: 14, color: "#ef4444" },
+      { emoji: "🍓", radius: 19, color: "#f43f5e" },
+      { emoji: "🍇", radius: 24, color: "#8b5cf6" },
+      { emoji: "🍊", radius: 29, color: "#fb923c" },
+      { emoji: "🍎", radius: 34, color: "#dc2626" },
+      { emoji: "🍐", radius: 39, color: "#a3c943" },
+      { emoji: "🍉", radius: 45, color: "#22c55e" },
+      { emoji: "🍍", radius: 51, color: "#eab308" }
+    ];
 
     let fruits = [];
-    let nextFruit;
+    let nextType = 0;
+    let aimX = WIDTH / 2;
+    let canDrop = true;
     let gameOver = false;
+    let lastFrameTime = 0;
+    let mergeLock = 0;
 
-    function randomSmallFruit() {
+    function randomNextType() {
       return Math.floor(Math.random() * 3);
     }
 
-    function startFruitGame() {
-      fruits = Array(rows * columns).fill(null);
-      nextFruit = randomSmallFruit();
-      gameOver = false;
-      fruitStatus.textContent = "Your turn! Choose a column.";
-      renderFruitBoard();
+    function updateNextFruit() {
+      fruitNextDisplay.textContent = `Next fruit: ${fruitTypes[nextType].emoji}`;
     }
 
-    function renderFruitBoard() {
-      fruitBoard.replaceChildren();
-      fruitNext.textContent = `Next fruit: ${fruitLevels[nextFruit]}`;
+    function resetFruitGame() {
+      fruits = [];
+      nextType = randomNextType();
+      aimX = WIDTH / 2;
+      canDrop = true;
+      gameOver = false;
+      mergeLock = 0;
+      fruitStatus.textContent = "Aim and click or tap to drop a fruit.";
+      updateNextFruit();
+      drawGame();
+    }
 
-      for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < columns; col++) {
-          const index = row * columns + col;
-          const cell = document.createElement("button");
+    function getPointerX(event) {
+      const rect = canvas.getBoundingClientRect();
+      return (event.clientX - rect.left) * (WIDTH / rect.width);
+    }
 
-          cell.type = "button";
-          cell.className = "fruit-cell";
-          cell.textContent = fruits[index] === null
-            ? ""
-            : fruitLevels[fruits[index]];
-          cell.setAttribute(
-            "aria-label",
-            fruits[index] === null
-              ? `Drop fruit in column ${col + 1}`
-              : `${fruitLevels[fruits[index]]} in column ${col + 1}`
-          );
-          cell.disabled = gameOver;
-          cell.addEventListener("click", () => dropFruit(col));
+    canvas.addEventListener("pointermove", (event) => {
+      aimX = getPointerX(event);
+    });
 
-          fruitBoard.appendChild(cell);
+    canvas.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      aimX = getPointerX(event);
+      dropFruit();
+    });
+
+    fruitReset.addEventListener("click", resetFruitGame);
+
+    function dropFruit() {
+      if (!canDrop || gameOver) return;
+
+      const type = nextType;
+      const radius = fruitTypes[type].radius;
+      const x = Math.max(
+        WALL + radius,
+        Math.min(WIDTH - WALL - radius, aimX)
+      );
+
+      fruits.push({
+        x,
+        y: 48,
+        vx: 0,
+        vy: 0,
+        angle: 0,
+        spin: 0,
+        radius,
+        type,
+        settled: false,
+        dropTimer: 0
+      });
+
+      canDrop = false;
+      nextType = randomNextType();
+      updateNextFruit();
+      fruitStatus.textContent = "Fruit dropped!";
+    }
+
+    function mergeFruits() {
+      if (mergeLock > 0) return;
+
+      for (let i = 0; i < fruits.length; i++) {
+        const a = fruits[i];
+        if (a.type >= fruitTypes.length - 1) continue;
+
+        for (let j = i + 1; j < fruits.length; j++) {
+          const b = fruits[j];
+          if (a.type !== b.type) continue;
+
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const distance = Math.hypot(dx, dy);
+          const targetDistance = a.radius + b.radius;
+
+          if (distance > targetDistance + 1) continue;
+
+          const newType = a.type + 1;
+          const newRadius = fruitTypes[newType].radius;
+
+          const newFruit = {
+            x: (a.x + b.x) / 2,
+            y: (a.y + b.y) / 2,
+            vx: (a.vx + b.vx) * 0.35,
+            vy: Math.min((a.vy + b.vy) * 0.2 - 90, -45),
+            angle: (a.angle + b.angle) / 2,
+            spin: (a.spin + b.spin) * 0.5,
+            radius: newRadius,
+            type: newType,
+            settled: false,
+            dropTimer: 0
+          };
+
+          fruits.splice(j, 1);
+          fruits.splice(i, 1);
+          fruits.push(newFruit);
+
+          mergeLock = 0.12;
+          fruitStatus.textContent =
+            `Nice merge! You made ${fruitTypes[newType].emoji}.`;
+          return;
         }
       }
     }
 
-    function dropFruit(col) {
-      if (gameOver) return;
+    function resolveCollisions() {
+      // Repeat a few passes so stacked fruits settle smoothly.
+      for (let pass = 0; pass < 3; pass++) {
+        for (let i = 0; i < fruits.length; i++) {
+          const a = fruits[i];
 
-      let row = rows - 1;
-      while (row >= 0 && fruits[row * columns + col] !== null) {
-        row--;
+          for (let j = i + 1; j < fruits.length; j++) {
+            const b = fruits[j];
+            let dx = b.x - a.x;
+            let dy = b.y - a.y;
+            let distance = Math.hypot(dx, dy);
+            const minDistance = a.radius + b.radius;
+
+            if (distance >= minDistance) continue;
+            if (distance === 0) {
+              dx = 0.01;
+              distance = 0.01;
+            }
+
+            const nx = dx / distance;
+            const ny = dy / distance;
+            const overlap = minDistance - distance;
+
+            // Push both fruits apart according to their masses.
+            const massA = a.radius * a.radius;
+            const massB = b.radius * b.radius;
+            const shareA = massB / (massA + massB);
+            const shareB = massA / (massA + massB);
+
+            a.x -= nx * overlap * shareA;
+            a.y -= ny * overlap * shareA;
+            b.x += nx * overlap * shareB;
+            b.y += ny * overlap * shareB;
+
+            const relativeVx = b.vx - a.vx;
+            const relativeVy = b.vy - a.vy;
+            const velocityAlongNormal = relativeVx * nx + relativeVy * ny;
+
+            if (velocityAlongNormal < 0) {
+              const restitution = FRUIT_BOUNCE;
+              const impulse = -(1 + restitution) * velocityAlongNormal / 2;
+              const impulseX = impulse * nx;
+              const impulseY = impulse * ny;
+
+              a.vx -= impulseX;
+              a.vy -= impulseY;
+              b.vx += impulseX;
+              b.vy += impulseY;
+
+              // Add a little sideways roll at contact.
+              const tangentX = -ny;
+              const tangentY = nx;
+              const tangentSpeed = relativeVx * tangentX + relativeVy * tangentY;
+              const roll = tangentSpeed * 0.006;
+
+              a.spin -= roll;
+              b.spin += roll;
+            }
+          }
+        }
       }
-
-      if (row < 0) {
-        fruitStatus.textContent = "That column is full—choose another.";
-        return;
-      }
-
-      const index = row * columns + col;
-      fruits[index] = nextFruit;
-
-      mergeNearby(index);
-      nextFruit = randomSmallFruit();
-
-      if (fruits.slice(0, columns).some(fruit => fruit !== null)) {
-        gameOver = true;
-        fruitStatus.textContent = "Game over! Press New game to play again.";
-      } else if (!fruitStatus.textContent.startsWith("Merge!")) {
-        fruitStatus.textContent = "Your turn! Choose a column.";
-      }
-
-      renderFruitBoard();
     }
 
-    function mergeNearby(startIndex) {
-      const queue = [startIndex];
+    function updatePhysics(dt) {
+      mergeLock = Math.max(0, mergeLock - dt);
 
-      while (queue.length > 0) {
-        const index = queue.shift();
-        const level = fruits[index];
+      for (const fruit of fruits) {
+        fruit.dropTimer += dt;
+        fruit.vy += GRAVITY * dt;
 
-        if (level === null || level >= fruitLevels.length - 1) continue;
+        fruit.x += fruit.vx * dt;
+        fruit.y += fruit.vy * dt;
+        fruit.angle += fruit.spin * dt;
 
-        const row = Math.floor(index / columns);
-        const col = index % columns;
+        fruit.vx *= Math.pow(FRICTION, dt * 60);
+        fruit.spin *= Math.pow(0.96, dt * 60);
 
-        const neighbors = [
-          [row - 1, col],
-          [row + 1, col],
-          [row, col - 1],
-          [row, col + 1]
-        ];
+        const left = WALL + fruit.radius;
+        const right = WIDTH - WALL - fruit.radius;
+        const floor = HEIGHT - WALL - fruit.radius;
 
-        const match = neighbors.find(([nextRow, nextCol]) =>
-          nextRow >= 0 &&
-          nextRow < rows &&
-          nextCol >= 0 &&
-          nextCol < columns &&
-          fruits[nextRow * columns + nextCol] === level
+        if (fruit.x < left) {
+          fruit.x = left;
+          fruit.vx = Math.abs(fruit.vx) * WALL_BOUNCE;
+          fruit.spin += fruit.vy * 0.002;
+        } else if (fruit.x > right) {
+          fruit.x = right;
+          fruit.vx = -Math.abs(fruit.vx) * WALL_BOUNCE;
+          fruit.spin -= fruit.vy * 0.002;
+        }
+
+        if (fruit.y > floor) {
+          fruit.y = floor;
+          if (fruit.vy > 20) fruit.vy = -fruit.vy * WALL_BOUNCE;
+          else fruit.vy = 0;
+
+          fruit.vx *= 0.94;
+          fruit.spin *= 0.8;
+        } else {
+          fruit.settled = false;
+        }
+
+        if (Math.abs(fruit.vy) < 18 && Math.abs(fruit.vx) < 8) {
+          fruit.settled = true;
+        }
+      }
+
+      resolveCollisions();
+
+      // Keep fruits inside the container after collision resolution.
+      for (const fruit of fruits) {
+        fruit.x = Math.max(
+          WALL + fruit.radius,
+          Math.min(WIDTH - WALL - fruit.radius, fruit.x)
+        );
+        fruit.y = Math.min(HEIGHT - WALL - fruit.radius, fruit.y);
+      }
+
+      mergeFruits();
+
+      if (!canDrop && !gameOver) {
+        const newestFruit = fruits[fruits.length - 1];
+        if (!newestFruit || newestFruit.dropTimer > 0.3 && newestFruit.settled) {
+          canDrop = true;
+          fruitStatus.textContent = "Aim and click or tap to drop another fruit.";
+        }
+
+        // Do not trap the player if the fruit is still rolling.
+        if (newestFruit && newestFruit.dropTimer > 1.1) {
+          canDrop = true;
+          fruitStatus.textContent = "Aim and click or tap to drop another fruit.";
+        }
+      }
+
+      // Game over if fruit stays in the danger zone at the top.
+      const dangerFruit = fruits.some(fruit => fruit.y - fruit.radius < 20);
+      if (dangerFruit && fruits.length > 7) {
+        gameOver = true;
+        canDrop = false;
+        fruitStatus.textContent = "Game over! Press New game to play again.";
+      }
+    }
+
+    function drawFruit(fruit) {
+      ctx.save();
+      ctx.translate(fruit.x, fruit.y);
+      ctx.rotate(fruit.angle);
+
+      const { radius, type } = fruit;
+      const light = fruitTypes[type].color;
+
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.fillStyle = light;
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#ffffff";
+      ctx.stroke();
+
+      ctx.font = `${radius * 1.45}px system-ui, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(fruitTypes[type].emoji, 0, 1);
+
+      ctx.restore();
+    }
+
+    function drawGame() {
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
+      ctx.fillStyle = "#f5f2ff";
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      // Aim guide and preview fruit.
+      if (canDrop && !gameOver) {
+        const radius = fruitTypes[nextType].radius;
+        const x = Math.max(
+          WALL + radius,
+          Math.min(WIDTH - WALL - radius, aimX)
         );
 
-        if (match) {
-          const [matchRow, matchCol] = match;
-          const matchIndex = matchRow * columns + matchCol;
+        ctx.save();
+        ctx.setLineDash([5, 6]);
+        ctx.strokeStyle = "#a99de4";
+        ctx.beginPath();
+        ctx.moveTo(x, 25);
+        ctx.lineTo(x, HEIGHT - WALL);
+        ctx.stroke();
+        ctx.setLineDash([]);
 
-          fruits[index] = null;
-          fruits[matchIndex] = level + 1;
+        ctx.globalAlpha = 0.65;
+        ctx.font = `${radius * 1.45}px system-ui, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(fruitTypes[nextType].emoji, x, 48);
+        ctx.restore();
+      }
 
-          fruitStatus.textContent = `Merge! You made ${fruitLevels[level + 1]}.`;
-          queue.push(matchIndex);
-        }
+      for (const fruit of fruits) {
+        drawFruit(fruit);
+      }
+
+      if (gameOver) {
+        ctx.fillStyle = "#20243acc";
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        ctx.fillStyle = "white";
+        ctx.font = "bold 28px system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Game Over", WIDTH / 2, HEIGHT / 2);
       }
     }
 
-    fruitReset.addEventListener("click", startFruitGame);
-    startFruitGame();
+    function animate(time) {
+      const dt = lastFrameTime
+        ? Math.min((time - lastFrameTime) / 1000, 0.032)
+        : 1 / 60;
+
+      lastFrameTime = time;
+
+      if (!gameOver) {
+        // Substeps make collisions smoother and less likely to overlap.
+        const substeps = 2;
+        for (let i = 0; i < substeps; i++) {
+          updatePhysics(dt / substeps);
+        }
+      }
+
+      drawGame();
+      requestAnimationFrame(animate);
+    }
+
+    resetFruitGame();
+    requestAnimationFrame(animate);
   </script>
 </body>
 </html>
