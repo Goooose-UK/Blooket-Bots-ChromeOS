@@ -122,10 +122,12 @@
     const codeInput = document.querySelector("#code");
     const result = document.querySelector("#result");
 
-    const names = [
-      "Sam The AI", "NeverGonna", "ByeBye", "Crash it Now",
-      "ChatGPT", "LuckyLlama", "MightyMango", "CloudyCat",
-      "AI Bot", "BouncyBee", "NeonNarwhal", "FurryPerson"
+    const words = [
+      "Fox", "Cat", "Dog", "Bear", "Wolf", "Hawk",
+      "Owl", "Lion", "Tiger", "Shark", "Whale", "Frog",
+      "Panda", "Koala", "Llama", "Moose", "Bunny", "Otter",
+      "Raven", "Cobra", "Ducky", "Mango", "Pizza", "Waffle",
+      "Comet", "Pixel", "Ninja", "Sunny", "Zippy", "Cosmic"
     ];
 
     joinForm.addEventListener("submit", (event) => {
@@ -134,9 +136,13 @@
       const code = codeInput.value.trim();
       if (!code) return;
 
-      const randomName = names[Math.floor(Math.random() * names.length)];
-      const joinUrl = new URL("https://play.blooket.com/play");
+      const word = words[Math.floor(Math.random() * words.length)];
+      const digits = Math.floor(Math.random() * 10000)
+        .toString()
+        .padStart(4, "0");
+      const randomName = `${word.slice(0, 6)}${digits}`;
 
+      const joinUrl = new URL("https://play.blooket.com/play");
       joinUrl.searchParams.set("id", code);
       joinUrl.searchParams.set("name", randomName);
 
