@@ -2,7 +2,7 @@
 
 
 A standalone webpage with a Blooket-themed name generator, selectable themes, and a fruit merge game.
-Features
+Features for ChromeOS... No one can stop the Bot Waves HAHAHAHAHAHAHHAHAHAHA
 
 Generate a random name and Blooket join link from a game code.
 Copy the generated name.
