@@ -1,4 +1,6 @@
-Blooket Bot-ter
+                                          Blooket Bot-ter
+
+
 A standalone webpage with a Blooket-themed name generator, selectable themes, and a fruit merge game.
 Features
 
