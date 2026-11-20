@@ -83,28 +83,37 @@
 
     a { color: #5140c2; }
 
-    .fruit-board {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 14px;
+    #fruit-next {
+      text-align: center;
+      font-weight: 650;
     }
 
-    .fruit-tile {
-      min-height: 64px;
-      padding: 8px;
-      border: 1px solid #e2dff2;
+    .fruit-board {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 4px;
+      width: min(100%, 360px);
+      margin: 14px auto;
+      padding: 6px;
+      border: 3px solid #8675dc;
       border-radius: 12px;
-      background: #f8f6ff;
-      font-size: 28px;
+      background: #eeeaff;
+    }
+
+    .fruit-cell {
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid #ddd8f3;
+      border-radius: 8px;
+      background: white;
+      font-size: clamp(18px, 5vw, 30px);
       cursor: pointer;
     }
 
-    .fruit-tile:hover { background: #eeeaff; }
-
-    .fruit-tile.selected {
-      outline: 3px solid #6654d9;
-    }
+    .fruit-cell:hover { background: #f5f2ff; }
+    .fruit-cell:disabled { cursor: default; }
   </style>
 </head>
 
@@ -143,9 +152,10 @@
 
     <section>
       <h2>Fruit Merge</h2>
-      <p>Click two matching fruits to merge them. How big can you get?</p>
+      <p>Choose a column to drop the next fruit. Matching fruits that touch merge!</p>
+      <div id="fruit-next" aria-live="polite"></div>
       <div id="fruit-board" class="fruit-board" aria-label="Fruit merge game"></div>
-      <p id="fruit-status" aria-live="polite">Pick two matching fruits!</p>
+      <p id="fruit-status" aria-live="polite">Your turn!</p>
       <button type="button" id="fruit-reset">New game</button>
     </section>
   </main>
@@ -237,80 +247,124 @@
 
     const fruitBoard = document.querySelector("#fruit-board");
     const fruitStatus = document.querySelector("#fruit-status");
+    const fruitNext = document.querySelector("#fruit-next");
     const fruitReset = document.querySelector("#fruit-reset");
 
-    const fruitLevels = ["🍒", "🍓", "🍇", "🍊", "🍉", "🍍", "🥝"];
+    const fruitLevels = ["🍒", "🍓", "🍇", "🍊", "🍎", "🍐", "🍉", "🍍"];
+    const columns = 6;
+    const rows = 8;
+
     let fruits = [];
-    let selectedFruit = null;
+    let nextFruit;
+    let gameOver = false;
+
+    function randomSmallFruit() {
+      return Math.floor(Math.random() * 3);
+    }
 
     function startFruitGame() {
-      fruits = Array.from(
-        { length: 16 },
-        () => fruitLevels[Math.floor(Math.random() * 3)]
-      );
-      selectedFruit = null;
-      fruitStatus.textContent = "Pick two matching fruits!";
+      fruits = Array(rows * columns).fill(null);
+      nextFruit = randomSmallFruit();
+      gameOver = false;
+      fruitStatus.textContent = "Your turn! Choose a column.";
       renderFruitBoard();
     }
 
     function renderFruitBoard() {
       fruitBoard.replaceChildren();
+      fruitNext.textContent = `Next fruit: ${fruitLevels[nextFruit]}`;
 
-      fruits.forEach((fruit, index) => {
-        const tile = document.createElement("button");
-        tile.type = "button";
-        tile.className = "fruit-tile";
-        tile.textContent = fruit;
-        tile.setAttribute("aria-label", `Fruit: ${fruit}`);
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < columns; col++) {
+          const index = row * columns + col;
+          const cell = document.createElement("button");
 
-        if (selectedFruit === index) {
-          tile.classList.add("selected");
+          cell.type = "button";
+          cell.className = "fruit-cell";
+          cell.textContent = fruits[index] === null
+            ? ""
+            : fruitLevels[fruits[index]];
+          cell.setAttribute(
+            "aria-label",
+            fruits[index] === null
+              ? `Drop fruit in column ${col + 1}`
+              : `${fruitLevels[fruits[index]]} in column ${col + 1}`
+          );
+          cell.disabled = gameOver;
+          cell.addEventListener("click", () => dropFruit(col));
+
+          fruitBoard.appendChild(cell);
         }
-
-        tile.addEventListener("click", () => selectFruit(index));
-        fruitBoard.appendChild(tile);
-      });
+      }
     }
 
-    function selectFruit(index) {
-      if (selectedFruit === null) {
-        selectedFruit = index;
-        fruitStatus.textContent = "Now pick another matching fruit.";
-        renderFruitBoard();
+    function dropFruit(col) {
+      if (gameOver) return;
+
+      let row = rows - 1;
+      while (row >= 0 && fruits[row * columns + col] !== null) {
+        row--;
+      }
+
+      if (row < 0) {
+        fruitStatus.textContent = "That column is full—choose another.";
         return;
       }
 
-      const firstIndex = selectedFruit;
-      selectedFruit = null;
+      const index = row * columns + col;
+      fruits[index] = nextFruit;
 
-      if (firstIndex === index) {
-        fruitStatus.textContent = "Pick a different fruit tile.";
-        renderFruitBoard();
-        return;
+      mergeNearby(index);
+      nextFruit = randomSmallFruit();
+
+      if (fruits.slice(0, columns).some(fruit => fruit !== null)) {
+        gameOver = true;
+        fruitStatus.textContent = "Game over! Press New game to play again.";
+      } else if (!fruitStatus.textContent.startsWith("Merge!")) {
+        fruitStatus.textContent = "Your turn! Choose a column.";
       }
-
-      if (fruits[firstIndex] !== fruits[index]) {
-        fruitStatus.textContent = "Those fruits don’t match—try again!";
-        renderFruitBoard();
-        return;
-      }
-
-      const currentLevel = fruitLevels.indexOf(fruits[firstIndex]);
-
-      if (currentLevel === fruitLevels.length - 1) {
-        fruitStatus.textContent =
-          "That’s the biggest fruit! Start a new game to play again.";
-        renderFruitBoard();
-        return;
-      }
-
-      fruits[firstIndex] = fruitLevels[currentLevel + 1];
-      fruits[index] = fruitLevels[Math.floor(Math.random() * 3)];
-
-      fruitStatus.textContent =
-        `Nice merge! You made ${fruitLevels[currentLevel + 1]}.`;
 
       renderFruitBoard();
+    }
+
+    function mergeNearby(startIndex) {
+      const queue = [startIndex];
+
+      while (queue.length > 0) {
+        const index = queue.shift();
+        const level = fruits[index];
+
+        if (level === null || level >= fruitLevels.length - 1) continue;
+
+        const row = Math.floor(index / columns);
+        const col = index % columns;
+
+        const neighbors = [
+          [row - 1, col],
+          [row + 1, col],
+          [row, col - 1],
+          [row, col + 1]
+        ];
+
+        const match = neighbors.find(([nextRow, nextCol]) =>
+          nextRow >= 0 &&
+          nextRow < rows &&
+          nextCol >= 0 &&
+          nextCol < columns &&
+          fruits[nextRow * columns + nextCol] === level
+        );
+
+        if (match) {
+          const [matchRow, matchCol] = match;
+          const matchIndex = matchRow * columns + matchCol;
+
+          fruits[index] = null;
+          fruits[matchIndex] = level + 1;
+
+          fruitStatus.textContent = `Merge! You made ${fruitLevels[level + 1]}.`;
+          queue.push(matchIndex);
+        }
+      }
     }
 
     fruitReset.addEventListener("click", startFruitGame);
