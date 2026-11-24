@@ -47,80 +47,126 @@
       --input-bg: #ffffff;
       --shadow: #683e5922;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;min-height:100vh;padding:24px;
-      color:var(--text);background:var(--page-bg);
-      font:16px/1.5 system-ui,sans-serif;
-      transition:background 180ms ease,color 180ms ease;
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      color: var(--text);
+      background: var(--page-bg);
+      font: 16px/1.5 system-ui, sans-serif;
+      transition: background 180ms ease, color 180ms ease;
     }
-    .layout{
-      width:min(1180px,100%);
-      margin:auto;display:grid;
-      grid-template-columns:minmax(0,1fr) 370px;
-      align-items:start;gap:24px;
+    .layout {
+      width: min(1180px, 100%);
+      margin: auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 370px;
+      align-items: start;
+      gap: 24px;
     }
-    main,aside,footer{
-      padding:28px;border:1px solid var(--border);
-      border-radius:20px;background:var(--card-bg);
-      box-shadow:0 12px 40px var(--shadow);
+    main, aside, footer {
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--card-bg);
+      box-shadow: 0 12px 40px var(--shadow);
     }
-    h1{margin-top:0}
-    section+section{margin-top:28px;padding-top:24px;border-top:1px solid var(--border)}
-    label{display:block;margin-bottom:8px;font-weight:650}
-    input,button,select{font:inherit}
-    input,select{
-      width:100%;padding:12px 14px;
-      border:1px solid var(--border);
-      border-radius:10px;color:var(--text);
-      background:var(--input-bg);
+    h1 { margin-top: 0; }
+    section + section {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
     }
-    button{
-      padding:12px 14px;border:0;
-      border-radius:10px;color:#fff;
-      background:var(--accent);font-weight:700;
-      cursor:pointer;
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 650;
     }
-    button:hover{background:var(--accent-hover)}
-    .form-button{width:100%}
-    .choices{display:flex;gap:12px}
-    .choices button{width:50%}
-    .choices button:last-child{background:#757889}
-    #result{margin-top:16px;overflow-wrap:anywhere}
-    #result p{margin:0 0 12px}
-    .join-button{
-      display:block;width:100%;margin:12px 0;
-      padding:17px 20px;border-radius:12px;
-      color:#fff;background:var(--accent);
-      font-size:1.1rem;font-weight:750;
-      text-align:center;text-decoration:none;
-      box-shadow:0 5px 14px var(--shadow);
+    input, button, select { font: inherit; }
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      background: var(--input-bg);
     }
-    .join-button:hover{background:var(--accent-hover)}
-    a:not(.join-button){color:var(--accent)}
-    #jeff{display:none;max-width:100%;max-height:280px;margin-top:14px;border-radius:12px}
-    .theme-picker{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-    .theme-picker label{margin:0;white-space:nowrap}
-    .fruit-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-    #fruit-next{font-weight:650}
-    #fruit-reset{margin-left:auto}
-    #fruit-canvas{
-      display:block;width:100%;height:auto;
-      margin:14px auto;border:3px solid var(--canvas-border);
-      border-radius:14px;background:var(--canvas-bg);
-      touch-action:none;
+    button {
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--accent);
+      font-weight: 700;
+      cursor: pointer;
     }
-    footer{grid-column:1/-1;text-align:center}
-    footer h2{margin-top:0}
-    footer p{margin-bottom:0}
-    @media(max-width:850px){
-      .layout{grid-template-columns:1fr}
-      aside{grid-row:2}
-      footer{grid-column:1}
+    button:hover { background: var(--accent-hover); }
+    .form-button { width: 100%; }
+    .choices { display: flex; gap: 12px; }
+    .choices button { width: 50%; }
+    .choices button:last-child { background: #757889; }
+    #result { margin-top: 16px; overflow-wrap: anywhere; }
+    #result p { margin: 0 0 12px; }
+    .join-button {
+      display: block;
+      width: 100%;
+      margin: 12px 0;
+      padding: 17px 20px;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--accent);
+      font-size: 1.1rem;
+      font-weight: 750;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 5px 14px var(--shadow);
     }
-    @media(max-width:520px){
-      body{padding:12px}
-      main,aside,footer{padding:20px}
+    .join-button:hover { background: var(--accent-hover); }
+    a:not(.join-button) { color: var(--accent); }
+    #jeff {
+      display: none;
+      max-width: 100%;
+      max-height: 280px;
+      margin-top: 14px;
+      border-radius: 12px;
+    }
+    .theme-picker {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .theme-picker label { margin: 0; white-space: nowrap; }
+    .fruit-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    #fruit-next { font-weight: 650; }
+    #fruit-reset { margin-left: auto; }
+    #fruit-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 14px auto;
+      border: 3px solid var(--canvas-border);
+      border-radius: 14px;
+      background: var(--canvas-bg);
+      touch-action: none;
+    }
+    footer { grid-column: 1 / -1; text-align: center; }
+    footer h2 { margin-top: 0; }
+    footer p { margin-bottom: 0; }
+    @media (max-width: 850px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { grid-row: 2; }
+      footer { grid-column: 1; }
+    }
+    @media (max-width: 520px) {
+      body { padding: 12px; }
+      main, aside, footer { padding: 20px; }
     }
   </style>
 </head>
@@ -139,7 +185,6 @@
 
     <h1>Game Hub</h1>
 
-    <!-- Mode selector -->
     <section>
       <h2>Choose Mode</h2>
       <select id="mode-select">
@@ -148,7 +193,6 @@
       </select>
     </section>
 
-    <!-- Blooket UI -->
     <section id="blooket-section">
       <h2>Join a Blooket game</h2>
       <form id="join-form">
@@ -160,7 +204,6 @@
       <div id="result" aria-live="polite"></div>
     </section>
 
-    <!-- Kahoot UI -->
     <section id="kahoot-section" style="display:none;">
       <h2>Join a Kahoot game</h2>
       <form id="kahoot-form">
@@ -172,10 +215,9 @@
       <div id="kahoot-result" aria-live="polite"></div>
     </section>
 
-    <!-- Wi‑Fi joke -->
     <section>
-      <h2>Fix my Wi‑Fi</h2>
-      <p>Should Jeff come fix your Wi‑Fi?</p>
+      <h2>Fix my Wi-Fi</h2>
+      <p>Should Jeff come fix your Wi-Fi?</p>
       <div class="choices">
         <button type="button" id="yes">Y</button>
         <button type="button" id="no">N</button>
@@ -185,7 +227,6 @@
     </section>
   </main>
 
-  <!-- Fruit merge -->
   <aside>
     <h2>Fruit Merge</h2>
     <p>Move your pointer to aim, then click or tap to drop a fruit. Matching fruits merge!</p>
@@ -217,51 +258,47 @@
 </div>
 
 <script>
-/* ---------- Theme selector ---------- */
+/* Theme selector */
 const themeSelect = document.querySelector('#theme-select');
 themeSelect.addEventListener('change', () => {
   document.body.dataset.theme = themeSelect.value;
 });
 
-/* ---------- Mode toggle (Kahoot / Blooket) ---------- */
+/* Mode toggle */
 const modeSelect = document.getElementById('mode-select');
 const blooketSection = document.getElementById('blooket-section');
-const kahootSection  = document.getElementById('kahoot-section');
+const kahootSection = document.getElementById('kahoot-section');
 
 modeSelect.addEventListener('change', () => {
-  const mode = modeSelect.value;
-  if (mode === 'kahoot') {
-    blooketSection.style.display = 'none';
-    kahootSection.style.display  = 'block';
-  } else {
-    kahootSection.style.display = 'none';
-    blooketSection.style.display = 'block';
-  }
+  const isKahoot = modeSelect.value === 'kahoot';
+  blooketSection.style.display = isKahoot ? 'none' : 'block';
+  kahootSection.style.display = isKahoot ? 'block' : 'none';
 });
 
-/* ---------- Shared random‑name pool ---------- */
+/* Shared random-name pool */
 const nameStarts = [
-  "ChatGPT","DuckBot","PixelAI","RoboFox","Never",
-  "MegaBot","BrainAI","Sorry","SmartBot","AIDuck",
-  "Wifi","Yrruf","DataBot","AIBear","NotAbot",
-  "DigitalDog","BotLlama","Denis","CloudBot","AIWizard",
-  "OWO","ByeBye","AICat","Fox","CyberBee",
-  "ByteBuddy","BotNinja","Rufus","Human","PixelBot"
+  "ChatGPT", "DuckBot", "PixelAI", "RoboFox", "Never",
+  "MegaBot", "BrainAI", "Sorry", "SmartBot", "AIDuck",
+  "Wifi", "Yrruf", "DataBot", "AIBear", "NotAbot",
+  "DigitalDog", "BotLlama", "Denis", "CloudBot", "AIWizard",
+  "OWO", "ByeBye", "AICat", "Fox", "CyberBee",
+  "ByteBuddy", "BotNinja", "Rufus", "Human", "PixelBot"
 ];
 
-/* ---------- Blooket logic ---------- */
+/* Blooket logic */
 const joinForm = document.getElementById('join-form');
 const codeInput = document.getElementById('code');
 const resultDiv = document.getElementById('result');
 
-joinForm.addEventListener('submit', e => {
-  e.preventDefault();
+joinForm.addEventListener('submit', event => {
+  event.preventDefault();
   const code = codeInput.value.trim();
   if (!code) return;
 
-  const nameStart = nameStarts[Math.floor(Math.random()*nameStarts.length)];
-  const digits = Math.floor(Math.random()*90) + 10;
+  const nameStart = nameStarts[Math.floor(Math.random() * nameStarts.length)];
+  const digits = Math.floor(Math.random() * 90) + 10;
   const randomName = `${nameStart}${digits}`;
+
   const joinUrl = new URL('https://play.blooket.com/play');
   joinUrl.searchParams.set('id', code);
 
@@ -280,7 +317,7 @@ joinForm.addEventListener('submit', e => {
     } catch {
       const tmp = document.createElement('input');
       tmp.value = randomName;
-      tmp.setAttribute('readonly','');
+      tmp.setAttribute('readonly', '');
       tmp.style.position = 'fixed';
       tmp.style.left = '-9999px';
       document.body.appendChild(tmp);
@@ -304,22 +341,26 @@ joinForm.addEventListener('submit', e => {
   resultDiv.append(nameP, copyBtn, joinBtn, note);
 });
 
-/* ---------- Kahoot logic (uses same name pool) ---------- */
+/* Kahoot logic */
 const kahootForm = document.getElementById('kahoot-form');
 const pinInput = document.getElementById('pin');
 const kahootResult = document.getElementById('kahoot-result');
 
-kahootForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const pin = pinInput.value.trim();
+kahootForm.addEventListener('submit', event => {
+  event.preventDefault();
+
+  // Keep only digits in the PIN.
+  const pin = pinInput.value.replace(/\D/g, '');
   if (!pin) return;
 
-  const nameStart = nameStarts[Math.floor(Math.random()*nameStarts.length)];
-  const digits = Math.floor(Math.random()*900) + 100; // three‑digit suffix
+  const nameStart = nameStarts[Math.floor(Math.random() * nameStarts.length)];
+  const digits = Math.floor(Math.random() * 900) + 100;
   const randomName = `${nameStart}${digits}`;
 
-  const joinUrl = new URL('https://kahoot.it/challenge/' + encodeURIComponent(pin));
-  joinUrl.searchParams.set('nick', randomName);
+  // Produces: https://kahoot.it/?pin=4492864&refer_method=link
+  const joinUrl = new URL('https://kahoot.it/');
+  joinUrl.searchParams.set('pin', pin);
+  joinUrl.searchParams.set('refer_method', 'link');
 
   kahootResult.replaceChildren();
 
@@ -336,7 +377,7 @@ kahootForm.addEventListener('submit', e => {
     } catch {
       const tmp = document.createElement('input');
       tmp.value = randomName;
-      tmp.setAttribute('readonly','');
+      tmp.setAttribute('readonly', '');
       tmp.style.position = 'fixed';
       tmp.style.left = '-9999px';
       document.body.appendChild(tmp);
@@ -355,25 +396,26 @@ kahootForm.addEventListener('submit', e => {
   joinBtn.rel = 'noopener noreferrer';
 
   const note = document.createElement('p');
-  note.textContent = 'Open the link – the generated name will automatically fill the Nickname field.';
+  note.textContent = 'Open the link and enter your nickname when Kahoot prompts you.';
 
   kahootResult.append(nameP, copyBtn, joinBtn, note);
 });
 
-/* ---------- Wi‑Fi joke ---------- */
+/* Wi-Fi joke */
 document.getElementById('yes').addEventListener('click', () => {
   document.getElementById('wifi-result').textContent = 'OK Your wifi is fixed';
   document.getElementById('jeff').style.display = 'block';
 });
+
 document.getElementById('no').addEventListener('click', () => {
   document.getElementById('wifi-result').textContent =
-    'Because you didn’t say yes to Jeff fixing your Wi‑Fi, he’s broke and homeless now. ' +
+    'Because you didn’t say yes to Jeff fixing your Wi-Fi, he’s broke and homeless now. ' +
     'He was ready to come over, solve the whole problem, and get his life back on track but you never gave him the green light. ' +
-    'Now he’s out there with no job, no home, and no Wi‑Fi to connect to. I hope you’re happy.';
+    'Now he’s out there with no job, no home, and no Wi-Fi to connect to. I hope you’re happy.';
   document.getElementById('jeff').style.display = 'none';
 });
 
-/* ---------- Fruit‑merge game ---------- */
+/* Fruit-merge game */
 const canvas = document.getElementById('fruit-canvas');
 const ctx = canvas.getContext('2d');
 const fruitStatus = document.getElementById('fruit-status');
@@ -388,85 +430,111 @@ const WALL_BOUNCE = 0.22;
 const FRUIT_BOUNCE = 0.12;
 
 const fruitTypes = [
-  {emoji:'🍒',radius:14,color:'#ef4444'},
-  {emoji:'🍓',radius:19,color:'#f43f5e'},
-  {emoji:'🍇',radius:24,color:'#8b5cf6'},
-  {emoji:'🍊',radius:29,color:'#fb923c'},
-  {emoji:'🍎',radius:34,color:'#dc2626'},
-  {emoji:'🍐',radius:39,color:'#a3c943'},
-  {emoji:'🍉',radius:45,color:'#22c55e'},
-  {emoji:'🍍',radius:51,color:'#eab308'}
+  {emoji: '🍒', radius: 14, color: '#ef4444'},
+  {emoji: '🍓', radius: 19, color: '#f43f5e'},
+  {emoji: '🍇', radius: 24, color: '#8b5cf6'},
+  {emoji: '🍊', radius: 29, color: '#fb923c'},
+  {emoji: '🍎', radius: 34, color: '#dc2626'},
+  {emoji: '🍐', radius: 39, color: '#a3c943'},
+  {emoji: '🍉', radius: 45, color: '#22c55e'},
+  {emoji: '🍍', radius: 51, color: '#eab308'}
 ];
 
 let fruits = [];
 let nextType = 0;
-let aimX = WIDTH/2;
+let aimX = WIDTH / 2;
 let canDrop = true;
 let gameOver = false;
 let lastFrameTime = 0;
 let mergeLock = 0;
 
-function randomNextType(){ return Math.floor(Math.random()*3); }
+function randomNextType() {
+  return Math.floor(Math.random() * 3);
+}
 
-function updateNextFruit(){
+function updateNextFruit() {
   fruitNextDisplay.textContent = `Next fruit: ${fruitTypes[nextType].emoji}`;
 }
 
-function resetFruitGame(){
-  fruits = []; nextType = randomNextType(); aimX = WIDTH/2;
-  canDrop = true; gameOver = false; mergeLock = 0;
+function resetFruitGame() {
+  fruits = [];
+  nextType = randomNextType();
+  aimX = WIDTH / 2;
+  canDrop = true;
+  gameOver = false;
+  mergeLock = 0;
   fruitStatus.textContent = 'Aim and click or tap to drop a fruit.';
-  updateNextFruit(); drawGame();
+  updateNextFruit();
+  drawGame();
 }
 
-function pointerX(e){
-  const r = canvas.getBoundingClientRect();
-  return (e.clientX - r.left) * (WIDTH / r.width);
+function pointerX(event) {
+  const rect = canvas.getBoundingClientRect();
+  return (event.clientX - rect.left) * (WIDTH / rect.width);
 }
-canvas.addEventListener('pointermove', e => aimX = pointerX(e));
-canvas.addEventListener('pointerdown', e => { e.preventDefault(); aimX = pointerX(e); dropFruit(); });
+
+canvas.addEventListener('pointermove', event => {
+  aimX = pointerX(event);
+});
+
+canvas.addEventListener('pointerdown', event => {
+  event.preventDefault();
+  aimX = pointerX(event);
+  dropFruit();
+});
+
 fruitReset.addEventListener('click', resetFruitGame);
 
-function dropFruit(){
+function dropFruit() {
   if (!canDrop || gameOver) return;
+
   const type = nextType;
   const radius = fruitTypes[type].radius;
-  const x = Math.max(WALL+radius, Math.min(WIDTH-WALL-radius, aimX));
+  const x = Math.max(WALL + radius, Math.min(WIDTH - WALL - radius, aimX));
 
-  fruits.push({x, y:48, vx:0, vy:0, angle:0, spin:0,
-               radius, type, settled:false, dropTimer:0});
+  fruits.push({
+    x, y: 48, vx: 0, vy: 0, angle: 0, spin: 0,
+    radius, type, settled: false, dropTimer: 0
+  });
+
   canDrop = false;
   nextType = randomNextType();
   updateNextFruit();
   fruitStatus.textContent = 'Fruit dropped!';
 }
 
-/* ---- physics & collision ---- */
-function mergeFruits(){
-  if (mergeLock>0) return;
-  for(let i=0;i<fruits.length;i++){
+function mergeFruits() {
+  if (mergeLock > 0) return;
+
+  for (let i = 0; i < fruits.length; i++) {
     const a = fruits[i];
-    if (a.type >= fruitTypes.length-1) continue;
-    for(let j=i+1;j<fruits.length;j++){
+    if (a.type >= fruitTypes.length - 1) continue;
+
+    for (let j = i + 1; j < fruits.length; j++) {
       const b = fruits[j];
-      if (a.type!==b.type) continue;
-      const dx = b.x-a.x, dy = b.y-a.y;
-      const dist = Math.hypot(dx,dy);
-      if (dist> a.radius + b.radius + 1) continue;
-      const newType = a.type+1;
-      fruits.splice(j,1); fruits.splice(i,1);
+      if (a.type !== b.type) continue;
+
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist > a.radius + b.radius + 1) continue;
+
+      const newType = a.type + 1;
+      fruits.splice(j, 1);
+      fruits.splice(i, 1);
       fruits.push({
-        x:(a.x+b.x)/2,
-        y:(a.y+b.y)/2,
-        vx:(a.vx+b.vx)*0.35,
-        vy:Math.min((a.vy+b.vy)*0.2-90,-45),
-        angle:(a.angle+b.angle)/2,
-        spin:(a.spin+b.spin)*0.5,
-        radius:fruitTypes[newType].radius,
-        type:newType,
-        settled:false,
-        dropTimer:0
+        x: (a.x + b.x) / 2,
+        y: (a.y + b.y) / 2,
+        vx: (a.vx + b.vx) * 0.35,
+        vy: Math.min((a.vy + b.vy) * 0.2 - 90, -45),
+        angle: (a.angle + b.angle) / 2,
+        spin: (a.spin + b.spin) * 0.5,
+        radius: fruitTypes[newType].radius,
+        type: newType,
+        settled: false,
+        dropTimer: 0
       });
+
       mergeLock = 0.12;
       fruitStatus.textContent = `Nice merge! You made ${fruitTypes[newType].emoji}.`;
       return;
@@ -474,138 +542,200 @@ function mergeFruits(){
   }
 }
 
-function resolveCollisions(){
-  for(let pass=0;pass<3;pass++){
-    for(let i=0;i<fruits.length;i++){
+function resolveCollisions() {
+  for (let pass = 0; pass < 3; pass++) {
+    for (let i = 0; i < fruits.length; i++) {
       const a = fruits[i];
-      for(let j=i+1;j<fruits.length;j++){
+
+      for (let j = i + 1; j < fruits.length; j++) {
         const b = fruits[j];
-        let dx = b.x-a.x, dy = b.y-a.y;
-        let distance = Math.hypot(dx,dy);
+        let dx = b.x - a.x;
+        let dy = b.y - a.y;
+        let distance = Math.hypot(dx, dy);
         const minDist = a.radius + b.radius;
+
         if (distance >= minDist) continue;
-        if (distance===0){dx=0.01; distance=0.01;}
-        const nx = dx/distance, ny = dy/distance;
+        if (distance === 0) {
+          dx = 0.01;
+          distance = 0.01;
+        }
+
+        const nx = dx / distance;
+        const ny = dy / distance;
         const overlap = minDist - distance;
-        const massA = a.radius*a.radius, massB = b.radius*b.radius;
-        const shareA = massB/(massA+massB), shareB = massA/(massA+massB);
-        a.x -= nx*overlap*shareA; a.y -= ny*overlap*shareA;
-        b.x += nx*overlap*shareB; b.y += ny*overlap*shareB;
-        const relVx = b.vx-a.vx, relVy = b.vy-a.vy;
-        const velAlong = relVx*nx + relVy*ny;
-        if (velAlong<0){
-          const impulse = -(1+FRUIT_BOUNCE)*velAlong/2;
-          const ix = impulse*nx, iy = impulse*ny;
-          a.vx -= ix; a.vy -= iy;
-          b.vx += ix; b.vy += iy;
-          const tangent = relVx*-ny + relVy*nx;
-          const roll = tangent*0.006;
-          a.spin -= roll; b.spin += roll;
+        const massA = a.radius * a.radius;
+        const massB = b.radius * b.radius;
+        const shareA = massB / (massA + massB);
+        const shareB = massA / (massA + massB);
+
+        a.x -= nx * overlap * shareA;
+        a.y -= ny * overlap * shareA;
+        b.x += nx * overlap * shareB;
+        b.y += ny * overlap * shareB;
+
+        const relVx = b.vx - a.vx;
+        const relVy = b.vy - a.vy;
+        const velAlong = relVx * nx + relVy * ny;
+
+        if (velAlong < 0) {
+          const impulse = -(1 + FRUIT_BOUNCE) * velAlong / 2;
+          const ix = impulse * nx;
+          const iy = impulse * ny;
+          a.vx -= ix;
+          a.vy -= iy;
+          b.vx += ix;
+          b.vy += iy;
+
+          const tangent = relVx * -ny + relVy * nx;
+          const roll = tangent * 0.006;
+          a.spin -= roll;
+          b.spin += roll;
         }
       }
     }
   }
 }
 
-function updatePhysics(dt){
-  mergeLock = Math.max(0, mergeLock-dt);
-  for(const f of fruits){
-    f.dropTimer += dt;
-    f.vy += GRAVITY*dt;
-    f.x += f.vx*dt;
-    f.y += f.vy*dt;
-    f.angle += f.spin*dt;
-    f.vx *= Math.pow(0.985, dt*60);
-    f.spin *= Math.pow(0.96, dt*60);
-    const left = WALL+f.radius, right = WIDTH-WALL-f.radius, floor = HEIGHT-WALL-f.radius;
-    if (f.x<left){ f.x=left; f.vx=Math.abs(f.vx)*WALL_BOUNCE; f.spin+=f.vy*0.002; }
-    else if (f.x>right){ f.x=right; f.vx=-Math.abs(f.vx)*WALL_BOUNCE; f.spin-=f.vy*0.002; }
-    if (f.y>floor){
-      f.y=floor;
-      f.vy = f.vy>20 ? -f.vy*WALL_BOUNCE : 0;
-      f.vx*=0.94; f.spin*=0.8;
-    }else f.settled=false;
-    if (Math.abs(f.vy)<18 && Math.abs(f.vx)<8) f.settled=true;
-  }
-  resolveCollisions();
-  for(const f of fruits){
-    f.x = Math.max(WALL+f.radius, Math.min(WIDTH-WALL-f.radius, f.x));
-    f.y = Math.min(HEIGHT-WALL-f.radius, f.y);
-  }
-  mergeFruits();
-  if (!canDrop && !gameOver){
-    const newest = fruits[fruits.length-1];
-    if (!newest || (newest.dropTimer>0.3 && newest.settled) || newest.dropTimer>1.1){
-      canDrop = true;
-      fruitStatus.textContent = "Aim and click or tap to drop another fruit.";
+function updatePhysics(dt) {
+  mergeLock = Math.max(0, mergeLock - dt);
+
+  for (const fruit of fruits) {
+    fruit.dropTimer += dt;
+    fruit.vy += GRAVITY * dt;
+    fruit.x += fruit.vx * dt;
+    fruit.y += fruit.vy * dt;
+    fruit.angle += fruit.spin * dt;
+    fruit.vx *= Math.pow(0.985, dt * 60);
+    fruit.spin *= Math.pow(0.96, dt * 60);
+
+    const left = WALL + fruit.radius;
+    const right = WIDTH - WALL - fruit.radius;
+    const floor = HEIGHT - WALL - fruit.radius;
+
+    if (fruit.x < left) {
+      fruit.x = left;
+      fruit.vx = Math.abs(fruit.vx) * WALL_BOUNCE;
+      fruit.spin += fruit.vy * 0.002;
+    } else if (fruit.x > right) {
+      fruit.x = right;
+      fruit.vx = -Math.abs(fruit.vx) * WALL_BOUNCE;
+      fruit.spin -= fruit.vy * 0.002;
+    }
+
+    if (fruit.y > floor) {
+      fruit.y = floor;
+      fruit.vy = fruit.vy > 20 ? -fruit.vy * WALL_BOUNCE : 0;
+      fruit.vx *= 0.94;
+      fruit.spin *= 0.8;
+    } else {
+      fruit.settled = false;
+    }
+
+    if (Math.abs(fruit.vy) < 18 && Math.abs(fruit.vx) < 8) {
+      fruit.settled = true;
     }
   }
-  if (fruits.some(f=>f.y-f.radius<20) && fruits.length>7){
-    gameOver = true; canDrop = false;
-    fruitStatus.textContent = "Game over! Press New game to play again.";
+
+  resolveCollisions();
+
+  for (const fruit of fruits) {
+    fruit.x = Math.max(WALL + fruit.radius, Math.min(WIDTH - WALL - fruit.radius, fruit.x));
+    fruit.y = Math.min(HEIGHT - WALL - fruit.radius, fruit.y);
+  }
+
+  mergeFruits();
+
+  if (!canDrop && !gameOver) {
+    const newest = fruits[fruits.length - 1];
+    if (!newest || (newest.dropTimer > 0.3 && newest.settled) || newest.dropTimer > 1.1) {
+      canDrop = true;
+      fruitStatus.textContent = 'Aim and click or tap to drop another fruit.';
+    }
+  }
+
+  if (fruits.some(fruit => fruit.y - fruit.radius < 20) && fruits.length > 7) {
+    gameOver = true;
+    canDrop = false;
+    fruitStatus.textContent = 'Game over! Press New game to play again.';
   }
 }
 
-/* ---- rendering ---- */
-function drawFruit(f){
+function drawFruit(fruit) {
   ctx.save();
-  ctx.translate(f.x,f.y);
-  ctx.rotate(f.angle);
+  ctx.translate(fruit.x, fruit.y);
+  ctx.rotate(fruit.angle);
   ctx.beginPath();
-  ctx.arc(0,0,f.radius,0,Math.PI*2);
-  ctx.fillStyle = fruitTypes[f.type].color;
+  ctx.arc(0, 0, fruit.radius, 0, Math.PI * 2);
+  ctx.fillStyle = fruitTypes[fruit.type].color;
   ctx.fill();
   ctx.lineWidth = 2;
-  ctx.strokeStyle = "#fff";
+  ctx.strokeStyle = '#fff';
   ctx.stroke();
-  ctx.font = `${f.radius*1.45}px system-ui, sans-serif`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(fruitTypes[f.type].emoji,0,1);
+  ctx.font = `${fruit.radius * 1.45}px system-ui, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(fruitTypes[fruit.type].emoji, 0, 1);
   ctx.restore();
 }
-function drawGame(){
-  ctx.clearRect(0,0,WIDTH,HEIGHT);
-  const bg = getComputedStyle(document.body).getPropertyValue('--canvas-bg').trim()||'#f5f2ff';
-  ctx.fillStyle = bg;
-  ctx.fillRect(0,0,WIDTH,HEIGHT);
 
-  if (canDrop && !gameOver){
-    const r = fruitTypes[nextType].radius;
-    const x = Math.max(WALL+r, Math.min(WIDTH-WALL-r, aimX));
+function drawGame() {
+  ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+  const bg = getComputedStyle(document.body)
+    .getPropertyValue('--canvas-bg').trim() || '#f5f2ff';
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+  if (canDrop && !gameOver) {
+    const radius = fruitTypes[nextType].radius;
+    const x = Math.max(WALL + radius, Math.min(WIDTH - WALL - radius, aimX));
+
     ctx.save();
-    ctx.setLineDash([5,6]);
-    ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--canvas-border').trim();
-    ctx.beginPath(); ctx.moveTo(x,25); ctx.lineTo(x,HEIGHT-WALL); ctx.stroke();
+    ctx.setLineDash([5, 6]);
+    ctx.strokeStyle = getComputedStyle(document.body)
+      .getPropertyValue('--canvas-border').trim();
+    ctx.beginPath();
+    ctx.moveTo(x, 25);
+    ctx.lineTo(x, HEIGHT - WALL);
+    ctx.stroke();
     ctx.setLineDash([]);
     ctx.globalAlpha = 0.65;
-    ctx.font = `${r*1.45}px system-ui, sans-serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+    ctx.font = `${radius * 1.45}px system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillText(fruitTypes[nextType].emoji, x, 48);
     ctx.restore();
   }
 
   fruits.forEach(drawFruit);
-  if (gameOver){
-    ctx.fillStyle = "#20243acc";
-    ctx.fillRect(0,0,WIDTH,HEIGHT);
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 28px system-ui, sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("Game Over", WIDTH/2, HEIGHT/2);
+
+  if (gameOver) {
+    ctx.fillStyle = '#20243acc';
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 28px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Game Over', WIDTH / 2, HEIGHT / 2);
   }
 }
-function animate(time){
-  const dt = lastFrameTime ? Math.min((time-lastFrameTime)/1000,0.032) : 1/60;
+
+function animate(time) {
+  const dt = lastFrameTime
+    ? Math.min((time - lastFrameTime) / 1000, 0.032)
+    : 1 / 60;
   lastFrameTime = time;
-  if (!gameOver){
-    for(let i=0;i<2;i++) updatePhysics(dt/2);
+
+  if (!gameOver) {
+    for (let i = 0; i < 2; i++) {
+      updatePhysics(dt / 2);
+    }
   }
+
   drawGame();
   requestAnimationFrame(animate);
 }
+
 resetFruitGame();
 requestAnimationFrame(animate);
 </script>
