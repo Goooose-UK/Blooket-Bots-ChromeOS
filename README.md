@@ -1,9 +1,9 @@
-                                                Blooket Bot-ter
+                                                Blooket and Kahoot Bot-ter
 
 
 A standalone webpage with a Blooket-themed name generator, selectable themes, and a fruit merge game.
 Features for ChromeOS... No one can stop the Bot Waves HAHAHAHAHAHAHHAHAHAHA
-                                         
+                                         Also works with Kahoot
                                                   Game Link
                                https://waterfowl-studio.github.io/Blooket-Bots-ChromeOS/
  
