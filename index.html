@@ -277,12 +277,12 @@ modeSelect.addEventListener('change', () => {
 
 /* Shared random-name pool */
 const nameStarts = [
-  "ChatGPT", "DuckBot", "Sus", "BuyCryto", "Never",
-  "EZwin", "NiceHack", "Sorry", "Dumb", "AIDuck",
-  "Wifi", "yrruF", "DataBot", "AIBear", "NotAbot",
+  "ChatGPT", "DuckBot", "Sus", "BuyCryto", "Claude",
+  "EZwin", "NiceHack", "SorryNotMe", "Dumb", "AIDuck",
+  "Wifi", "yrruF", "DataBreach", "AIBear", "NotAbot",
   "DigitalDog", "BetterThenU", "Denis", "Red", "AIWizard",
   "OWO", "ByeBye", "AICat", "Fox", "SuperHAX",
-  "ByteBuddy", "BotNinja", "Rufus", "Human", "RickRoll"
+  "GTA6-NPC", "BotNinja", "Rufus", "Human", "RickRoll"
 ];
 
 /* Blooket logic */
@@ -305,7 +305,7 @@ joinForm.addEventListener('submit', event => {
   resultDiv.replaceChildren();
 
   const nameP = document.createElement('p');
-  nameP.textContent = `Your randomly generated name: ${randomName}`;
+  nameP.textContent = `Your not randomly generated name: ${randomName}`;
 
   const copyBtn = document.createElement('button');
   copyBtn.type = 'button';
@@ -396,7 +396,7 @@ kahootForm.addEventListener('submit', event => {
   joinBtn.rel = 'noopener noreferrer';
 
   const note = document.createElement('p');
-  note.textContent = 'Open the link and enter your nickname when Kahoot prompts you.';
+  note.textContent = 'Open the link and enter your nickname when Kahoot tell u to.';
 
   kahootResult.append(nameP, copyBtn, joinBtn, note);
 });
