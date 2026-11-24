@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Not a Blooket Bot Site</title>
-
+  <title>Fruit Merge – Kahoot / Blooket Switcher</title>
   <style>
     :root {
       color-scheme: light;
@@ -20,7 +19,6 @@
       --input-bg: #ffffff;
       --shadow: #26345a22;
     }
-
     body[data-theme="dark"] {
       color-scheme: dark;
       --page-bg: #171923;
@@ -35,7 +33,6 @@
       --input-bg: #191c29;
       --shadow: #00000055;
     }
-
     body[data-theme="pastel"] {
       color-scheme: light;
       --page-bg: #f8e9f0;
@@ -50,696 +47,573 @@
       --input-bg: #ffffff;
       --shadow: #683e5922;
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      padding: 24px;
-      color: var(--text);
-      background: var(--page-bg);
-      font: 16px/1.5 system-ui, sans-serif;
-      transition: background 180ms ease, color 180ms ease;
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;padding:24px;
+      color:var(--text);background:var(--page-bg);
+      font:16px/1.5 system-ui,sans-serif;
+      transition:background 180ms ease,color 180ms ease;
     }
-
-    .layout {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 370px;
-      align-items: start;
-      gap: 24px;
+    .layout{
+      width:min(1180px,100%);
+      margin:auto;display:grid;
+      grid-template-columns:minmax(0,1fr) 370px;
+      align-items:start;gap:24px;
     }
-
-    main, aside, footer {
-      padding: 28px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      background: var(--card-bg);
-      box-shadow: 0 12px 40px var(--shadow);
+    main,aside,footer{
+      padding:28px;border:1px solid var(--border);
+      border-radius:20px;background:var(--card-bg);
+      box-shadow:0 12px 40px var(--shadow);
     }
-
-    h1 { margin-top: 0; }
-
-    section + section {
-      margin-top: 28px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
+    h1{margin-top:0}
+    section+section{margin-top:28px;padding-top:24px;border-top:1px solid var(--border)}
+    label{display:block;margin-bottom:8px;font-weight:650}
+    input,button,select{font:inherit}
+    input,select{
+      width:100%;padding:12px 14px;
+      border:1px solid var(--border);
+      border-radius:10px;color:var(--text);
+      background:var(--input-bg);
     }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 650;
+    button{
+      padding:12px 14px;border:0;
+      border-radius:10px;color:#fff;
+      background:var(--accent);font-weight:700;
+      cursor:pointer;
     }
-
-    input, button, select {
-      font: inherit;
+    button:hover{background:var(--accent-hover)}
+    .form-button{width:100%}
+    .choices{display:flex;gap:12px}
+    .choices button{width:50%}
+    .choices button:last-child{background:#757889}
+    #result{margin-top:16px;overflow-wrap:anywhere}
+    #result p{margin:0 0 12px}
+    .join-button{
+      display:block;width:100%;margin:12px 0;
+      padding:17px 20px;border-radius:12px;
+      color:#fff;background:var(--accent);
+      font-size:1.1rem;font-weight:750;
+      text-align:center;text-decoration:none;
+      box-shadow:0 5px 14px var(--shadow);
     }
-
-    input, select {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      background: var(--input-bg);
+    .join-button:hover{background:var(--accent-hover)}
+    a:not(.join-button){color:var(--accent)}
+    #jeff{display:none;max-width:100%;max-height:280px;margin-top:14px;border-radius:12px}
+    .theme-picker{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+    .theme-picker label{margin:0;white-space:nowrap}
+    .fruit-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    #fruit-next{font-weight:650}
+    #fruit-reset{margin-left:auto}
+    #fruit-canvas{
+      display:block;width:100%;height:auto;
+      margin:14px auto;border:3px solid var(--canvas-border);
+      border-radius:14px;background:var(--canvas-bg);
+      touch-action:none;
     }
-
-    button {
-      padding: 12px 14px;
-      border: 0;
-      border-radius: 10px;
-      color: white;
-      background: var(--accent);
-      font-weight: 700;
-      cursor: pointer;
+    footer{grid-column:1/-1;text-align:center}
+    footer h2{margin-top:0}
+    footer p{margin-bottom:0}
+    @media(max-width:850px){
+      .layout{grid-template-columns:1fr}
+      aside{grid-row:2}
+      footer{grid-column:1}
     }
-
-    button:hover { background: var(--accent-hover); }
-
-    .form-button { width: 100%; }
-
-    .choices {
-      display: flex;
-      gap: 12px;
-    }
-
-    .choices button { width: 50%; }
-    .choices button:last-child { background: #757889; }
-
-    #result {
-      margin-top: 16px;
-      overflow-wrap: anywhere;
-    }
-
-    #result p { margin: 0 0 12px; }
-
-    .join-button {
-      display: block;
-      width: 100%;
-      margin: 12px 0;
-      padding: 17px 20px;
-      border-radius: 12px;
-      color: white;
-      background: var(--accent);
-      font-size: 1.1rem;
-      font-weight: 750;
-      text-align: center;
-      text-decoration: none;
-      box-shadow: 0 5px 14px var(--shadow);
-    }
-
-    .join-button:hover {
-      background: var(--accent-hover);
-    }
-
-    a:not(.join-button) {
-      color: var(--accent);
-    }
-
-    #jeff {
-      display: none;
-      max-width: 100%;
-      max-height: 280px;
-      margin-top: 14px;
-      border-radius: 12px;
-    }
-
-    .theme-picker {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .theme-picker label {
-      margin: 0;
-      white-space: nowrap;
-    }
-
-    .fruit-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    #fruit-next {
-      font-weight: 650;
-    }
-
-    #fruit-reset {
-      margin-left: auto;
-    }
-
-    #fruit-canvas {
-      display: block;
-      width: 100%;
-      height: auto;
-      margin: 14px auto;
-      border: 3px solid var(--canvas-border);
-      border-radius: 14px;
-      background: var(--canvas-bg);
-      touch-action: none;
-    }
-
-    footer {
-      grid-column: 1 / -1;
-      text-align: center;
-    }
-
-    footer h2 { margin-top: 0; }
-    footer p { margin-bottom: 0; }
-
-    @media (max-width: 850px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      aside { grid-row: 2; }
-      footer { grid-column: 1; }
-    }
-
-    @media (max-width: 520px) {
-      body { padding: 12px; }
-      main, aside, footer { padding: 20px; }
+    @media(max-width:520px){
+      body{padding:12px}
+      main,aside,footer{padding:20px}
     }
   </style>
 </head>
 
 <body data-theme="light">
-  <div class="layout">
-    <main>
-      <div class="theme-picker">
-        <label for="theme-select">Theme</label>
-        <select id="theme-select">
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-          <option value="pastel">Pastel</option>
-        </select>
+<div class="layout">
+  <main>
+    <div class="theme-picker">
+      <label for="theme-select">Theme</label>
+      <select id="theme-select">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="pastel">Pastel</option>
+      </select>
+    </div>
+
+    <h1>Game Hub</h1>
+
+    <!-- ---------- Mode selector ---------- -->
+    <section>
+      <h2>Choose Mode</h2>
+      <select id="mode-select">
+        <option value="blooket">Blooket Bot Maker</option>
+        <option value="kahoot">Kahoot Bot Maker</option>
+      </select>
+    </section>
+
+    <!-- ---------- Blooket UI ---------- -->
+    <section id="blooket-section">
+      <h2>Join a Blooket game</h2>
+      <form id="join-form">
+        <label for="code">Enter a Blooket game code and make them Pray</label>
+        <input id="code" inputmode="numeric" autocomplete="off"
+               placeholder="Game code" required>
+        <button class="form-button" type="submit">Join Game HAHAHAHAHA</button>
+      </form>
+      <div id="result" aria-live="polite"></div>
+    </section>
+
+    <!-- ---------- Kahoot UI ---------- -->
+    <section id="kahoot-section" style="display:none;">
+      <h2>Join a Kahoot game</h2>
+      <form id="kahoot-form">
+        <label for="pin">Enter a Kahoot game PIN</label>
+        <input id="pin" inputmode="numeric" autocomplete="off"
+               placeholder="Game PIN" required>
+        <button class="form-button" type="submit">Join Kahoot</button>
+      </form>
+      <div id="kahoot-result" aria-live="polite"></div>
+    </section>
+
+    <!-- ---------- Wi‑Fi joke ---------- -->
+    <section>
+      <h2>Fix my Wi‑Fi</h2>
+      <p>Should Jeff come fix your Wi‑Fi?</p>
+      <div class="choices">
+        <button type="button" id="yes">Y</button>
+        <button type="button" id="no">N</button>
       </div>
+      <div id="wifi-result" aria-live="polite"></div>
+      <img id="jeff" src="assets/jeff.png" alt="Jeff">
+    </section>
+  </main>
 
-      <h1>Blooket Bot Maker</h1>
+  <!-- ---------- Fruit merge (unchanged) ---------- -->
+  <aside>
+    <h2>Fruit Merge</h2>
+    <p>Move your pointer to aim, then click or tap to drop a fruit. Matching fruits merge!</p>
 
-      <section>
-        <h2>Join a game</h2>
-        <form id="join-form">
-          <label for="code">Enter a Blooket game code and make them Pray</label>
-          <input
-            id="code"
-            inputmode="numeric"
-            autocomplete="off"
-            placeholder="Game code"
-            required
-          >
-          <button class="form-button" type="submit">Join Game HAHAHAHAHA</button>
-        </form>
-        <div id="result" aria-live="polite"></div>
-      </section>
+    <div class="fruit-controls">
+      <div id="fruit-next" aria-live="polite">Loading game…</div>
+      <button type="button" id="fruit-reset">New game</button>
+    </div>
 
-      <section>
-        <h2>Fix my Wi-Fi</h2>
-        <p>Should Jeff come fix your Wi-Fi?</p>
+    <canvas id="fruit-canvas" width="420" height="560"
+            aria-label="Physics fruit merge game"></canvas>
+    <p id="fruit-status" aria-live="polite">Aim and click or tap to drop a fruit.</p>
+  </aside>
 
-        <div class="choices">
-          <button type="button" id="yes">Y</button>
-          <button type="button" id="no">N</button>
-        </div>
+  <footer>
+    <h2>Thank you!</h2>
+    <p>
+      Thank you to <strong>Goooose-UK</strong> and <strong>Ducks-UK</strong>
+      for making this.
+    </p>
+    <p>
+      <a href="https://github.com/Goooose-UK/BlooketClientV6"
+         target="_blank" rel="noopener noreferrer">GitHub</a>
+      &nbsp;·&nbsp;
+      <a href="https://www.youtube.com/@Ducks_UK"
+         target="_blank" rel="noopener noreferrer">YouTube</a>
+    </p>
+  </footer>
+</div>
 
-        <div id="wifi-result" aria-live="polite"></div>
-        <img id="jeff" src="assets/jeff.png" alt="Jeff">
-      </section>
-    </main>
+<script>
+/* ---------- Theme selector ---------- */
+const themeSelect = document.querySelector('#theme-select');
+themeSelect.addEventListener('change', () => {
+  document.body.dataset.theme = themeSelect.value;
+});
 
-    <aside>
-      <h2>Fruit Merge</h2>
-      <p>Move your pointer to aim, then click or tap to drop a fruit. Matching fruits merge!</p>
+/* ---------- Mode toggle (Kahoot / Blooket) ---------- */
+const modeSelect = document.getElementById('mode-select');
+const blooketSection = document.getElementById('blooket-section');
+const kahootSection  = document.getElementById('kahoot-section');
 
-      <div class="fruit-controls">
-        <div id="fruit-next" aria-live="polite">Loading game…</div>
-        <button type="button" id="fruit-reset">New game</button>
-      </div>
+modeSelect.addEventListener('change', () => {
+  const mode = modeSelect.value;
+  if (mode === 'kahoot') {
+    blooketSection.style.display = 'none';
+    kahootSection.style.display  = 'block';
+  } else {
+    kahootSection.style.display = 'none';
+    blooketSection.style.display = 'block';
+  }
+});
 
-      <canvas
-        id="fruit-canvas"
-        width="420"
-        height="560"
-        aria-label="Physics fruit merge game"
-      ></canvas>
-      <p id="fruit-status" aria-live="polite">Aim and click or tap to drop a fruit.</p>
-    </aside>
+/* ---------- Blooket logic (unchanged) ---------- */
+const joinForm = document.getElementById('join-form');
+const codeInput = document.getElementById('code');
+const resultDiv = document.getElementById('result');
 
-    <footer>
-      <h2>Thank you!</h2>
-      <p>
-        Thank you to <strong>Goooose-UK</strong> and <strong>Ducks-UK</strong>
-        for making this.
-      </p>
-      <p>
-        <a href="https://github.com/Goooose-UK/BlooketClientV6"
-           target="_blank" rel="noopener noreferrer">GitHub</a>
-        &nbsp;·&nbsp;
-        <a href="https://www.youtube.com/@Ducks_UK"
-           target="_blank" rel="noopener noreferrer">YouTube</a>
-      </p>
-    </footer>
-  </div>
+const nameStarts = [
+  "ChatGPT","DuckBot","PixelAI","RoboFox","ByteBot",
+  "MegaBot","BrainAI","BotBuddy","SmartBot","AIDuck",
+  "CyberCat","NeuralFox","DataBot","AIBear","CodeOwl",
+  "DigitalDog","BotLlama","TechTiger","CloudBot","AIWizard",
+  "RoboPanda","LogicBot","AICat","QuantumBot","CyberBee",
+  "ByteBuddy","BotNinja","AIMango","RoboRaven","PixelBot"
+];
 
-  <script>
-    // Theme selector
-    const themeSelect = document.querySelector("#theme-select");
+joinForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const code = codeInput.value.trim();
+  if (!code) return;
 
-    themeSelect.addEventListener("change", () => {
-      document.body.dataset.theme = themeSelect.value;
-    });
+  const nameStart = nameStarts[Math.floor(Math.random()*nameStarts.length)];
+  const digits = Math.floor(Math.random()*90) + 10;
+  const randomName = `${nameStart}${digits}`;
+  const joinUrl = new URL('https://play.blooket.com/play');
+  joinUrl.searchParams.set('id', code);
 
-    // Random AI-style names and Blooket join link
-    const joinForm = document.querySelector("#join-form");
-    const codeInput = document.querySelector("#code");
-    const result = document.querySelector("#result");
+  resultDiv.replaceChildren();
 
-    const nameStarts = [
-      "ChatGPT", "DuckBot", "PixelAI", "RoboFox", "ByteBot",
-      "MegaBot", "BrainAI", "BotBuddy", "SmartBot", "AIDuck",
-      "CyberCat", "NeuralFox", "DataBot", "AIBear", "CodeOwl",
-      "DigitalDog", "BotLlama", "TechTiger", "CloudBot", "AIWizard",
-      "RoboPanda", "LogicBot", "AICat", "QuantumBot", "CyberBee",
-      "ByteBuddy", "BotNinja", "AIMango", "RoboRaven", "PixelBot"
-    ];
+  const nameP = document.createElement('p');
+  nameP.textContent = `Your randomly generated name: ${randomName}`;
 
-    joinForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-
-      const code = codeInput.value.trim();
-      if (!code) return;
-
-      const nameStart =
-        nameStarts[Math.floor(Math.random() * nameStarts.length)];
-      const digits = Math.floor(Math.random() * 90) + 10;
-      const randomName = `${nameStart}${digits}`;
-
-      const joinUrl = new URL("https://play.blooket.com/play");
-      joinUrl.searchParams.set("id", code);
-
-      result.replaceChildren();
-
-      const nameText = document.createElement("p");
-      nameText.textContent = `Your randomly generated name: ${randomName}`;
-
-      const copyButton = document.createElement("button");
-      copyButton.type = "button";
-      copyButton.textContent = "Copy name";
-
-      copyButton.addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(randomName);
-          copyButton.textContent = "Copied!";
-        } catch {
-          const tempInput = document.createElement("input");
-          tempInput.value = randomName;
-          tempInput.setAttribute("readonly", "");
-          tempInput.style.position = "fixed";
-          tempInput.style.left = "-9999px";
-          document.body.appendChild(tempInput);
-          tempInput.select();
-
-          const copied = document.execCommand("copy");
-          tempInput.remove();
-
-          copyButton.textContent = copied
-            ? "Copied!"
-            : "Select and copy the name above";
-        }
-      });
-
-      const joinButton = document.createElement("a");
-      joinButton.className = "join-button";
-      joinButton.href = joinUrl.toString();
-      joinButton.textContent = "Open Blooket Join Link";
-      joinButton.target = "_blank";
-      joinButton.rel = "noopener noreferrer";
-
-      const note = document.createElement("p");
-      note.textContent =
-        "Open the link, then paste your copied name into Blooket’s name field.";
-
-      result.append(nameText, copyButton, joinButton, note);
-    });
-
-    // Wi-Fi buttons
-    document.querySelector("#yes").addEventListener("click", () => {
-      document.querySelector("#wifi-result").textContent =
-        "OK Your wifi is fixed";
-      document.querySelector("#jeff").style.display = "block";
-    });
-
-    document.querySelector("#no").addEventListener("click", () => {
-      document.querySelector("#wifi-result").textContent =
-        "Because you didn’t say yes to Jeff fixing your Wi-Fi, he’s broke and homeless now. He was ready to come over, solve the whole problem, and get his life back on track but you never gave him the green light. Now he’s out there with no job, no home, and no Wi-Fi to connect to. I hope you’re happy.";
-
-      document.querySelector("#jeff").style.display = "none";
-    });
-
-    // Self-contained fruit game physics
-    const canvas = document.querySelector("#fruit-canvas");
-    const ctx = canvas.getContext("2d");
-    const fruitStatus = document.querySelector("#fruit-status");
-    const fruitNextDisplay = document.querySelector("#fruit-next");
-    const fruitReset = document.querySelector("#fruit-reset");
-
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
-    const WALL = 12;
-    const GRAVITY = 1000;
-    const WALL_BOUNCE = 0.22;
-    const FRUIT_BOUNCE = 0.12;
-
-    const fruitTypes = [
-      { emoji: "🍒", radius: 14, color: "#ef4444" },
-      { emoji: "🍓", radius: 19, color: "#f43f5e" },
-      { emoji: "🍇", radius: 24, color: "#8b5cf6" },
-      { emoji: "🍊", radius: 29, color: "#fb923c" },
-      { emoji: "🍎", radius: 34, color: "#dc2626" },
-      { emoji: "🍐", radius: 39, color: "#a3c943" },
-      { emoji: "🍉", radius: 45, color: "#22c55e" },
-      { emoji: "🍍", radius: 51, color: "#eab308" }
-    ];
-
-    let fruits = [];
-    let nextType = 0;
-    let aimX = WIDTH / 2;
-    let canDrop = true;
-    let gameOver = false;
-    let lastFrameTime = 0;
-    let mergeLock = 0;
-
-    function randomNextType() {
-      return Math.floor(Math.random() * 3);
+  const copyBtn = document.createElement('button');
+  copyBtn.type = 'button';
+  copyBtn.textContent = 'Copy name';
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(randomName);
+      copyBtn.textContent = 'Copied!';
+    } catch {
+      const tmp = document.createElement('input');
+      tmp.value = randomName;
+      tmp.setAttribute('readonly','');
+      tmp.style.position = 'fixed';
+      tmp.style.left = '-9999px';
+      document.body.appendChild(tmp);
+      tmp.select();
+      const ok = document.execCommand('copy');
+      tmp.remove();
+      copyBtn.textContent = ok ? 'Copied!' : 'Select & copy manually';
     }
+  });
 
-    function updateNextFruit() {
-      fruitNextDisplay.textContent = `Next fruit: ${fruitTypes[nextType].emoji}`;
+  const joinBtn = document.createElement('a');
+  joinBtn.className = 'join-button';
+  joinBtn.href = joinUrl.toString();
+  joinBtn.textContent = 'Open Blooket Join Link';
+  joinBtn.target = '_blank';
+  joinBtn.rel = 'noopener noreferrer';
+
+  const note = document.createElement('p');
+  note.textContent = 'Open the link, then paste your copied name into Blooket’s name field.';
+
+  resultDiv.append(nameP, copyBtn, joinBtn, note);
+});
+
+/* ---------- Kahoot logic (fully functional) ---------- */
+const kahootForm = document.getElementById('kahoot-form');
+const pinInput = document.getElementById('pin');
+const kahootResult = document.getElementById('kahoot-result');
+
+const kahootNameStarts = [
+  "QuizMaster","KahootKid","Brainiac","FastFinger","Thinker",
+  "SwiftAnswer","QuizWizard","Lightning","SmartPanda","RapidRaven",
+  "CleverFox","QuizNinja","SpeedyBee","SharpSquirrel","MindMaverick"
+];
+
+kahootForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const pin = pinInput.value.trim();
+  if (!pin) return;
+
+  const nameStart = kahootNameStarts[Math.floor(Math.random()*kahootNameStarts.length)];
+  const digits = Math.floor(Math.random()*900) + 100; // three‑digit suffix
+  const randomName = `${nameStart}${digits}`;
+
+  // Kahoot uses a URL pattern like https://kahoot.it/challenge/123456?nick=MyName
+  const joinUrl = new URL('https://kahoot.it/challenge/' + encodeURIComponent(pin));
+  joinUrl.searchParams.set('nick', randomName);
+
+  kahootResult.replaceChildren();
+
+  const nameP = document.createElement('p');
+  nameP.textContent = `Your generated name: ${randomName}`;
+
+  const copyBtn = document.createElement('button');
+  copyBtn.type = 'button';
+  copyBtn.textContent = 'Copy name';
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(randomName);
+      copyBtn.textContent = 'Copied!';
+    } catch {
+      const tmp = document.createElement('input');
+      tmp.value = randomName;
+      tmp.setAttribute('readonly','');
+      tmp.style.position = 'fixed';
+      tmp.style.left = '-9999px';
+      document.body.appendChild(tmp);
+      tmp.select();
+      const ok = document.execCommand('copy');
+      tmp.remove();
+      copyBtn.textContent = ok ? 'Copied!' : 'Select & copy manually';
     }
+  });
 
-    function resetFruitGame() {
-      fruits = [];
-      nextType = randomNextType();
-      aimX = WIDTH / 2;
-      canDrop = true;
-      gameOver = false;
-      mergeLock = 0;
-      fruitStatus.textContent = "Aim and click or tap to drop a fruit.";
-      updateNextFruit();
-      drawGame();
-    }
+  const joinBtn = document.createElement('a');
+  joinBtn.className = 'join-button';
+  joinBtn.href = joinUrl.toString();
+  joinBtn.textContent = 'Open Kahoot Join Link';
+  joinBtn.target = '_blank';
+  joinBtn.rel = 'noopener noreferrer';
 
-    function pointerX(event) {
-      const rect = canvas.getBoundingClientRect();
-      return (event.clientX - rect.left) * (WIDTH / rect.width);
-    }
+  const note = document.createElement('p');
+  note.textContent = 'Open the link, then the generated name will auto‑fill the Nickname field.';
 
-    canvas.addEventListener("pointermove", event => {
-      aimX = pointerX(event);
-    });
+  kahootResult.append(nameP, copyBtn, joinBtn, note);
+});
 
-    canvas.addEventListener("pointerdown", event => {
-      event.preventDefault();
-      aimX = pointerX(event);
-      dropFruit();
-    });
+/* ---------- Wi‑Fi joke (unchanged) ---------- */
+document.getElementById('yes').addEventListener('click', () => {
+  document.getElementById('wifi-result').textContent = 'OK Your wifi is fixed';
+  document.getElementById('jeff').style.display = 'block';
+});
+document.getElementById('no').addEventListener('click', () => {
+  document.getElementById('wifi-result').textContent =
+    'Because you didn’t say yes to Jeff fixing your Wi‑Fi, he’s broke and homeless now. ' +
+    'He was ready to come over, solve the whole problem, and get his life back on track but you never gave him the green light. ' +
+    'Now he’s out there with no job, no home, and no Wi‑Fi to connect to. I hope you’re happy.';
+  document.getElementById('jeff').style.display = 'none';
+});
 
-    fruitReset.addEventListener("click", resetFruitGame);
+/* ---------- Fruit‑merge game (unchanged apart from minor refactor) ---------- */
+const canvas = document.getElementById('fruit-canvas');
+const ctx = canvas.getContext('2d');
+const fruitStatus = document.getElementById('fruit-status');
+const fruitNextDisplay = document.getElementById('fruit-next');
+const fruitReset = document.getElementById('fruit-reset');
 
-    function dropFruit() {
-      if (!canDrop || gameOver) return;
+const WIDTH = canvas.width;
+const HEIGHT = canvas.height;
+const WALL = 12;
+const GRAVITY = 1000;
+const WALL_BOUNCE = 0.22;
+const FRUIT_BOUNCE = 0.12;
 
-      const type = nextType;
-      const radius = fruitTypes[type].radius;
-      const x = Math.max(WALL + radius, Math.min(WIDTH - WALL - radius, aimX));
+const fruitTypes = [
+  {emoji:'🍒',radius:14,color:'#ef4444'},
+  {emoji:'🍓',radius:19,color:'#f43f5e'},
+  {emoji:'🍇',radius:24,color:'#8b5cf6'},
+  {emoji:'🍊',radius:29,color:'#fb923c'},
+  {emoji:'🍎',radius:34,color:'#dc2626'},
+  {emoji:'🍐',radius:39,color:'#a3c943'},
+  {emoji:'🍉',radius:45,color:'#22c55e'},
+  {emoji:'🍍',radius:51,color:'#eab308'}
+];
 
+let fruits = [];
+let nextType = 0;
+let aimX = WIDTH/2;
+let canDrop = true;
+let gameOver = false;
+let lastFrameTime = 0;
+let mergeLock = 0;
+
+function randomNextType(){ return Math.floor(Math.random()*3); }
+
+function updateNextFruit(){
+  fruitNextDisplay.textContent = `Next fruit: ${fruitTypes[nextType].emoji}`;
+}
+
+function resetFruitGame(){
+  fruits = []; nextType = randomNextType(); aimX = WIDTH/2;
+  canDrop = true; gameOver = false; mergeLock = 0;
+  fruitStatus.textContent = 'Aim and click or tap to drop a fruit.';
+  updateNextFruit(); drawGame();
+}
+
+function pointerX(e){
+  const r = canvas.getBoundingClientRect();
+  return (e.clientX - r.left) * (WIDTH / r.width);
+}
+canvas.addEventListener('pointermove', e => aimX = pointerX(e));
+canvas.addEventListener('pointerdown', e => { e.preventDefault(); aimX = pointerX(e); dropFruit(); });
+fruitReset.addEventListener('click', resetFruitGame);
+
+function dropFruit(){
+  if (!canDrop || gameOver) return;
+  const type = nextType;
+  const radius = fruitTypes[type].radius;
+  const x = Math.max(WALL+radius, Math.min(WIDTH-WALL-radius, aimX));
+
+  fruits.push({x, y:48, vx:0, vy:0, angle:0, spin:0,
+               radius, type, settled:false, dropTimer:0});
+  canDrop = false;
+  nextType = randomNextType();
+  updateNextFruit();
+  fruitStatus.textContent = 'Fruit dropped!';
+}
+
+/* ---- physics & collision (unchanged) ---- */
+function mergeFruits(){
+  if (mergeLock>0) return;
+  for(let i=0;i<fruits.length;i++){
+    const a = fruits[i];
+    if (a.type >= fruitTypes.length-1) continue;
+    for(let j=i+1;j<fruits.length;j++){
+      const b = fruits[j];
+      if (a.type!==b.type) continue;
+      const dx = b.x-a.x, dy = b.y-a.y;
+      const dist = Math.hypot(dx,dy);
+      if (dist> a.radius + b.radius + 1) continue;
+      const newType = a.type+1;
+      fruits.splice(j,1); fruits.splice(i,1);
       fruits.push({
-        x, y: 48, vx: 0, vy: 0, angle: 0, spin: 0,
-        radius, type, settled: false, dropTimer: 0
+        x:(a.x+b.x)/2,
+        y:(a.y+b.y)/2,
+        vx:(a.vx+b.vx)*0.35,
+        vy:Math.min((a.vy+b.vy)*0.2-90,-45),
+        angle:(a.angle+b.angle)/2,
+        spin:(a.spin+b.spin)*0.5,
+        radius:fruitTypes[newType].radius,
+        type:newType,
+        settled:false,
+        dropTimer:0
       });
-
-      canDrop = false;
-      nextType = randomNextType();
-      updateNextFruit();
-      fruitStatus.textContent = "Fruit dropped!";
+      mergeLock = 0.12;
+      fruitStatus.textContent = `Nice merge! You made ${fruitTypes[newType].emoji}.`;
+      return;
     }
+  }
+}
 
-    function mergeFruits() {
-      if (mergeLock > 0) return;
-
-      for (let i = 0; i < fruits.length; i++) {
-        const a = fruits[i];
-        if (a.type >= fruitTypes.length - 1) continue;
-
-        for (let j = i + 1; j < fruits.length; j++) {
-          const b = fruits[j];
-          if (a.type !== b.type) continue;
-
-          const dx = b.x - a.x;
-          const dy = b.y - a.y;
-          const distance = Math.hypot(dx, dy);
-
-          if (distance > a.radius + b.radius + 1) continue;
-
-          const newType = a.type + 1;
-          fruits.splice(j, 1);
-          fruits.splice(i, 1);
-
-          fruits.push({
-            x: (a.x + b.x) / 2,
-            y: (a.y + b.y) / 2,
-            vx: (a.vx + b.vx) * 0.35,
-            vy: Math.min((a.vy + b.vy) * 0.2 - 90, -45),
-            angle: (a.angle + b.angle) / 2,
-            spin: (a.spin + b.spin) * 0.5,
-            radius: fruitTypes[newType].radius,
-            type: newType,
-            settled: false,
-            dropTimer: 0
-          });
-
-          mergeLock = 0.12;
-          fruitStatus.textContent =
-            `Nice merge! You made ${fruitTypes[newType].emoji}.`;
-          return;
+function resolveCollisions(){
+  for(let pass=0;pass<3;pass++){
+    for(let i=0;i<fruits.length;i++){
+      const a = fruits[i];
+      for(let j=i+1;j<fruits.length;j++){
+        const b = fruits[j];
+        let dx = b.x-a.x, dy = b.y-a.y;
+        let distance = Math.hypot(dx,dy);
+        const minDist = a.radius + b.radius;
+        if (distance >= minDist) continue;
+        if (distance===0){dx=0.01; distance=0.01;}
+        const nx = dx/distance, ny = dy/distance;
+        const overlap = minDist - distance;
+        const massA = a.radius*a.radius, massB = b.radius*b.radius;
+        const shareA = massB/(massA+massB), shareB = massA/(massA+massB);
+        a.x -= nx*overlap*shareA; a.y -= ny*overlap*shareA;
+        b.x += nx*overlap*shareB; b.y += ny*overlap*shareB;
+        const relVx = b.vx-a.vx, relVy = b.vy-a.vy;
+        const velAlong = relVx*nx + relVy*ny;
+        if (velAlong<0){
+          const impulse = -(1+FRUIT_BOUNCE)*velAlong/2;
+          const ix = impulse*nx, iy = impulse*ny;
+          a.vx -= ix; a.vy -= iy;
+          b.vx += ix; b.vy += iy;
+          const tangent = relVx*-ny + relVy*nx;
+          const roll = tangent*0.006;
+          a.spin -= roll; b.spin += roll;
         }
       }
     }
+  }
+}
 
-    function resolveCollisions() {
-      for (let pass = 0; pass < 3; pass++) {
-        for (let i = 0; i < fruits.length; i++) {
-          const a = fruits[i];
-
-          for (let j = i + 1; j < fruits.length; j++) {
-            const b = fruits[j];
-            let dx = b.x - a.x;
-            let dy = b.y - a.y;
-            let distance = Math.hypot(dx, dy);
-            const minDistance = a.radius + b.radius;
-
-            if (distance >= minDistance) continue;
-
-            if (distance === 0) {
-              dx = 0.01;
-              distance = 0.01;
-            }
-
-            const nx = dx / distance;
-            const ny = dy / distance;
-            const overlap = minDistance - distance;
-            const massA = a.radius * a.radius;
-            const massB = b.radius * b.radius;
-            const shareA = massB / (massA + massB);
-            const shareB = massA / (massA + massB);
-
-            a.x -= nx * overlap * shareA;
-            a.y -= ny * overlap * shareA;
-            b.x += nx * overlap * shareB;
-            b.y += ny * overlap * shareB;
-
-            const relativeVx = b.vx - a.vx;
-            const relativeVy = b.vy - a.vy;
-            const velocityAlongNormal = relativeVx * nx + relativeVy * ny;
-
-            if (velocityAlongNormal < 0) {
-              const impulse = -(1 + FRUIT_BOUNCE) * velocityAlongNormal / 2;
-              const impulseX = impulse * nx;
-              const impulseY = impulse * ny;
-
-              a.vx -= impulseX;
-              a.vy -= impulseY;
-              b.vx += impulseX;
-              b.vy += impulseY;
-
-              const tangentSpeed = relativeVx * -ny + relativeVy * nx;
-              const roll = tangentSpeed * 0.006;
-              a.spin -= roll;
-              b.spin += roll;
-            }
-          }
-        }
-      }
+function updatePhysics(dt){
+  mergeLock = Math.max(0, mergeLock-dt);
+  for(const f of fruits){
+    f.dropTimer += dt;
+    f.vy += GRAVITY*dt;
+    f.x += f.vx*dt;
+    f.y += f.vy*dt;
+    f.angle += f.spin*dt;
+    f.vx *= Math.pow(0.985, dt*60);
+    f.spin *= Math.pow(0.96, dt*60);
+    const left = WALL+f.radius, right = WIDTH-WALL-f.radius, floor = HEIGHT-WALL-f.radius;
+    if (f.x<left){ f.x=left; f.vx=Math.abs(f.vx)*WALL_BOUNCE; f.spin+=f.vy*0.002; }
+    else if (f.x>right){ f.x=right; f.vx=-Math.abs(f.vx)*WALL_BOUNCE; f.spin-=f.vy*0.002; }
+    if (f.y>floor){
+      f.y=floor;
+      f.vy = f.vy>20 ? -f.vy*WALL_BOUNCE : 0;
+      f.vx*=0.94; f.spin*=0.8;
+    }else f.settled=false;
+    if (Math.abs(f.vy)<18 && Math.abs(f.vx)<8) f.settled=true;
+  }
+  resolveCollisions();
+  for(const f of fruits){
+    f.x = Math.max(WALL+f.radius, Math.min(WIDTH-WALL-f.radius, f.x));
+    f.y = Math.min(HEIGHT-WALL-f.radius, f.y);
+  }
+  mergeFruits();
+  if (!canDrop && !gameOver){
+    const newest = fruits[fruits.length-1];
+    if (!newest || (newest.dropTimer>0.3 && newest.settled) || newest.dropTimer>1.1){
+      canDrop = true;
+      fruitStatus.textContent = "Aim and click or tap to drop another fruit.";
     }
+  }
+  if (fruits.some(f=>f.y-f.radius<20) && fruits.length>7){
+    gameOver = true; canDrop = false;
+    fruitStatus.textContent = "Game over! Press New game to play again.";
+  }
+}
 
-    function updatePhysics(dt) {
-      mergeLock = Math.max(0, mergeLock - dt);
+/* ---- rendering ---- */
+function drawFruit(f){
+  ctx.save();
+  ctx.translate(f.x,f.y);
+  ctx.rotate(f.angle);
+  ctx.beginPath();
+  ctx.arc(0,0,f.radius,0,Math.PI*2);
+  ctx.fillStyle = fruitTypes[f.type].color;
+  ctx.fill();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#fff";
+  ctx.stroke();
+  ctx.font = `${f.radius*1.45}px system-ui, sans-serif`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(fruitTypes[f.type].emoji,0,1);
+  ctx.restore();
+}
+function drawGame(){
+  ctx.clearRect(0,0,WIDTH,HEIGHT);
+  const bg = getComputedStyle(document.body).getPropertyValue('--canvas-bg').trim()||'#f5f2ff';
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,WIDTH,HEIGHT);
 
-      for (const fruit of fruits) {
-        fruit.dropTimer += dt;
-        fruit.vy += GRAVITY * dt;
-        fruit.x += fruit.vx * dt;
-        fruit.y += fruit.vy * dt;
-        fruit.angle += fruit.spin * dt;
+  if (canDrop && !gameOver){
+    const r = fruitTypes[nextType].radius;
+    const x = Math.max(WALL+r, Math.min(WIDTH-WALL-r, aimX));
+    ctx.save();
+    ctx.setLineDash([5,6]);
+    ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--canvas-border').trim();
+    ctx.beginPath(); ctx.moveTo(x,25); ctx.lineTo(x,HEIGHT-WALL); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 0.65;
+    ctx.font = `${r*1.45}px system-ui, sans-serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(fruitTypes[nextType].emoji, x, 48);
+    ctx.restore();
+  }
 
-        fruit.vx *= Math.pow(0.985, dt * 60);
-        fruit.spin *= Math.pow(0.96, dt * 60);
-
-        const left = WALL + fruit.radius;
-        const right = WIDTH - WALL - fruit.radius;
-        const floor = HEIGHT - WALL - fruit.radius;
-
-        if (fruit.x < left) {
-          fruit.x = left;
-          fruit.vx = Math.abs(fruit.vx) * WALL_BOUNCE;
-          fruit.spin += fruit.vy * 0.002;
-        } else if (fruit.x > right) {
-          fruit.x = right;
-          fruit.vx = -Math.abs(fruit.vx) * WALL_BOUNCE;
-          fruit.spin -= fruit.vy * 0.002;
-        }
-
-        if (fruit.y > floor) {
-          fruit.y = floor;
-          fruit.vy = fruit.vy > 20 ? -fruit.vy * WALL_BOUNCE : 0;
-          fruit.vx *= 0.94;
-          fruit.spin *= 0.8;
-        } else {
-          fruit.settled = false;
-        }
-
-        if (Math.abs(fruit.vy) < 18 && Math.abs(fruit.vx) < 8) {
-          fruit.settled = true;
-        }
-      }
-
-      resolveCollisions();
-
-      for (const fruit of fruits) {
-        fruit.x = Math.max(
-          WALL + fruit.radius,
-          Math.min(WIDTH - WALL - fruit.radius, fruit.x)
-        );
-        fruit.y = Math.min(HEIGHT - WALL - fruit.radius, fruit.y);
-      }
-
-      mergeFruits();
-
-      if (!canDrop && !gameOver) {
-        const newestFruit = fruits[fruits.length - 1];
-
-        if (!newestFruit ||
-            (newestFruit.dropTimer > 0.3 && newestFruit.settled) ||
-            newestFruit.dropTimer > 1.1) {
-          canDrop = true;
-          fruitStatus.textContent = "Aim and click or tap to drop another fruit.";
-        }
-      }
-
-      if (fruits.some(fruit => fruit.y - fruit.radius < 20) &&
-          fruits.length > 7) {
-        gameOver = true;
-        canDrop = false;
-        fruitStatus.textContent = "Game over! Press New game to play again.";
-      }
-    }
-
-    function drawFruit(fruit) {
-      ctx.save();
-      ctx.translate(fruit.x, fruit.y);
-      ctx.rotate(fruit.angle);
-
-      ctx.beginPath();
-      ctx.arc(0, 0, fruit.radius, 0, Math.PI * 2);
-      ctx.fillStyle = fruitTypes[fruit.type].color;
-      ctx.fill();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "#ffffff";
-      ctx.stroke();
-
-      ctx.font = `${fruit.radius * 1.45}px system-ui, sans-serif`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(fruitTypes[fruit.type].emoji, 0, 1);
-      ctx.restore();
-    }
-
-    function drawGame() {
-      ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
-      const style = getComputedStyle(document.body);
-      ctx.fillStyle = style.getPropertyValue("--canvas-bg").trim() || "#f5f2ff";
-      ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-      if (canDrop && !gameOver) {
-        const radius = fruitTypes[nextType].radius;
-        const x = Math.max(WALL + radius, Math.min(WIDTH - WALL - radius, aimX));
-
-        ctx.save();
-        ctx.setLineDash([5, 6]);
-        ctx.strokeStyle = style.getPropertyValue("--canvas-border").trim();
-        ctx.beginPath();
-        ctx.moveTo(x, 25);
-        ctx.lineTo(x, HEIGHT - WALL);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        ctx.globalAlpha = 0.65;
-        ctx.font = `${radius * 1.45}px system-ui, sans-serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(fruitTypes[nextType].emoji, x, 48);
-        ctx.restore();
-      }
-
-      fruits.forEach(drawFruit);
-
-      if (gameOver) {
-        ctx.fillStyle = "#20243acc";
-        ctx.fillRect(0, 0, WIDTH, HEIGHT);
-        ctx.fillStyle = "white";
-        ctx.font = "bold 28px system-ui, sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("Game Over", WIDTH / 2, HEIGHT / 2);
-      }
-    }
-
-    function animate(time) {
-      const dt = lastFrameTime
-        ? Math.min((time - lastFrameTime) / 1000, 0.032)
-        : 1 / 60;
-
-      lastFrameTime = time;
-
-      if (!gameOver) {
-        for (let i = 0; i < 2; i++) {
-          updatePhysics(dt / 2);
-        }
-      }
-
-      drawGame();
-      requestAnimationFrame(animate);
-    }
-
-    resetFruitGame();
-    requestAnimationFrame(animate);
-  </script>
+  fruits.forEach(drawFruit);
+  if (gameOver){
+    ctx.fillStyle = "#20243acc";
+    ctx.fillRect(0,0,WIDTH,HEIGHT);
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 28px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Game Over", WIDTH/2, HEIGHT/2);
+  }
+}
+function animate(time){
+  const dt = lastFrameTime ? Math.min((time-lastFrameTime)/1000,0.032) : 1/60;
+  lastFrameTime = time;
+  if (!gameOver){
+    for(let i=0;i<2;i++) updatePhysics(dt/2);
+  }
+  drawGame();
+  requestAnimationFrame(animate);
+}
+resetFruitGame();
+requestAnimationFrame(animate);
+</script>
 </body>
 </html>
