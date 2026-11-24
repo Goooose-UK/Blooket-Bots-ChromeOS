@@ -139,7 +139,7 @@
 
     <h1>Game Hub</h1>
 
-    <!-- ---------- Mode selector ---------- -->
+    <!-- Mode selector -->
     <section>
       <h2>Choose Mode</h2>
       <select id="mode-select">
@@ -148,7 +148,7 @@
       </select>
     </section>
 
-    <!-- ---------- Blooket UI ---------- -->
+    <!-- Blooket UI -->
     <section id="blooket-section">
       <h2>Join a Blooket game</h2>
       <form id="join-form">
@@ -160,7 +160,7 @@
       <div id="result" aria-live="polite"></div>
     </section>
 
-    <!-- ---------- Kahoot UI ---------- -->
+    <!-- Kahoot UI -->
     <section id="kahoot-section" style="display:none;">
       <h2>Join a Kahoot game</h2>
       <form id="kahoot-form">
@@ -172,7 +172,7 @@
       <div id="kahoot-result" aria-live="polite"></div>
     </section>
 
-    <!-- ---------- Wi‑Fi joke ---------- -->
+    <!-- Wi‑Fi joke -->
     <section>
       <h2>Fix my Wi‑Fi</h2>
       <p>Should Jeff come fix your Wi‑Fi?</p>
@@ -185,7 +185,7 @@
     </section>
   </main>
 
-  <!-- ---------- Fruit merge (unchanged) ---------- -->
+  <!-- Fruit merge -->
   <aside>
     <h2>Fruit Merge</h2>
     <p>Move your pointer to aim, then click or tap to drop a fruit. Matching fruits merge!</p>
@@ -239,11 +239,7 @@ modeSelect.addEventListener('change', () => {
   }
 });
 
-/* ---------- Blooket logic (unchanged) ---------- */
-const joinForm = document.getElementById('join-form');
-const codeInput = document.getElementById('code');
-const resultDiv = document.getElementById('result');
-
+/* ---------- Shared random‑name pool ---------- */
 const nameStarts = [
   "ChatGPT","DuckBot","PixelAI","RoboFox","ByteBot",
   "MegaBot","BrainAI","BotBuddy","SmartBot","AIDuck",
@@ -252,6 +248,11 @@ const nameStarts = [
   "RoboPanda","LogicBot","AICat","QuantumBot","CyberBee",
   "ByteBuddy","BotNinja","AIMango","RoboRaven","PixelBot"
 ];
+
+/* ---------- Blooket logic ---------- */
+const joinForm = document.getElementById('join-form');
+const codeInput = document.getElementById('code');
+const resultDiv = document.getElementById('result');
 
 joinForm.addEventListener('submit', e => {
   e.preventDefault();
@@ -303,27 +304,20 @@ joinForm.addEventListener('submit', e => {
   resultDiv.append(nameP, copyBtn, joinBtn, note);
 });
 
-/* ---------- Kahoot logic (fully functional) ---------- */
+/* ---------- Kahoot logic (uses same name pool) ---------- */
 const kahootForm = document.getElementById('kahoot-form');
 const pinInput = document.getElementById('pin');
 const kahootResult = document.getElementById('kahoot-result');
-
-const kahootNameStarts = [
-  "QuizMaster","KahootKid","Brainiac","FastFinger","Thinker",
-  "SwiftAnswer","QuizWizard","Lightning","SmartPanda","RapidRaven",
-  "CleverFox","QuizNinja","SpeedyBee","SharpSquirrel","MindMaverick"
-];
 
 kahootForm.addEventListener('submit', e => {
   e.preventDefault();
   const pin = pinInput.value.trim();
   if (!pin) return;
 
-  const nameStart = kahootNameStarts[Math.floor(Math.random()*kahootNameStarts.length)];
+  const nameStart = nameStarts[Math.floor(Math.random()*nameStarts.length)];
   const digits = Math.floor(Math.random()*900) + 100; // three‑digit suffix
   const randomName = `${nameStart}${digits}`;
 
-  // Kahoot uses a URL pattern like https://kahoot.it/challenge/123456?nick=MyName
   const joinUrl = new URL('https://kahoot.it/challenge/' + encodeURIComponent(pin));
   joinUrl.searchParams.set('nick', randomName);
 
@@ -361,12 +355,12 @@ kahootForm.addEventListener('submit', e => {
   joinBtn.rel = 'noopener noreferrer';
 
   const note = document.createElement('p');
-  note.textContent = 'Open the link, then the generated name will auto‑fill the Nickname field.';
+  note.textContent = 'Open the link – the generated name will automatically fill the Nickname field.';
 
   kahootResult.append(nameP, copyBtn, joinBtn, note);
 });
 
-/* ---------- Wi‑Fi joke (unchanged) ---------- */
+/* ---------- Wi‑Fi joke ---------- */
 document.getElementById('yes').addEventListener('click', () => {
   document.getElementById('wifi-result').textContent = 'OK Your wifi is fixed';
   document.getElementById('jeff').style.display = 'block';
@@ -379,7 +373,7 @@ document.getElementById('no').addEventListener('click', () => {
   document.getElementById('jeff').style.display = 'none';
 });
 
-/* ---------- Fruit‑merge game (unchanged apart from minor refactor) ---------- */
+/* ---------- Fruit‑merge game ---------- */
 const canvas = document.getElementById('fruit-canvas');
 const ctx = canvas.getContext('2d');
 const fruitStatus = document.getElementById('fruit-status');
@@ -447,7 +441,7 @@ function dropFruit(){
   fruitStatus.textContent = 'Fruit dropped!';
 }
 
-/* ---- physics & collision (unchanged) ---- */
+/* ---- physics & collision ---- */
 function mergeFruits(){
   if (mergeLock>0) return;
   for(let i=0;i<fruits.length;i++){
